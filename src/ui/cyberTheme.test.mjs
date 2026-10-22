@@ -105,6 +105,7 @@ test('visual styles retain Cyber through real preset application without droppin
     'noir',
     'anime',
     'snow',
+    'phosphor',
     'thermal',
     'retro',
   ]) {

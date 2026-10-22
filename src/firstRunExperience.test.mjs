@@ -986,6 +986,11 @@ test('the voice TOOL SCHEMA matches the pinned contract — the mission mapping 
   ]);
   // Cyber deliberately adds one layout; first-run missions still change no tools.
   hudLayout.enum = hudLayout.enum.filter((layout) => layout !== 'cyber');
+  // Phosphor deliberately adds one visual style.
+  const visualStyle = legacyTools.find(
+    (tool) => tool.name === 'set_visual_style',
+  ).parameters.properties.style;
+  visualStyle.enum = visualStyle.enum.filter((name) => name !== 'phosphor');
   const block = JSON.stringify(legacyTools);
   // Re-derived for the voice layer manifest (generated layer enums, alias and
   // field hints), point-and-ask's pointer/referent arguments and the prompt

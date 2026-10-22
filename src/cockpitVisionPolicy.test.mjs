@@ -24,6 +24,7 @@ test('Cockpit vision order mirrors the unique map preset order', () => {
     'anime',
     'noir',
     'snow',
+    'phosphor',
   ]);
   assert.equal(normalizeCockpitVisionMode('none'), 'optical');
   assert.equal(normalizeCockpitVisionMode('unknown'), 'optical');
@@ -37,6 +38,7 @@ test('Cockpit entry selects the vision mode equivalent to the active map style',
   assert.equal(cockpitVisionModeForStyle('anime'), 'anime');
   assert.equal(cockpitVisionModeForStyle('noir'), 'noir');
   assert.equal(cockpitVisionModeForStyle('snow'), 'snow');
+  assert.equal(cockpitVisionModeForStyle('phosphor'), 'phosphor');
   assert.equal(cockpitVisionModeForStyle('unsupported'), 'optical');
 });
 

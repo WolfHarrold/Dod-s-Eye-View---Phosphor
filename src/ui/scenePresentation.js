@@ -13,6 +13,7 @@ const STYLE_LABELS = Object.freeze({
   anime: msg('ANIME'),
   noir: msg('NOIR'),
   snow: msg('SNOW'),
+  phosphor: msg('PHOSPHOR'),
 });
 
 const DETECTION_MODE_LABELS = Object.freeze({

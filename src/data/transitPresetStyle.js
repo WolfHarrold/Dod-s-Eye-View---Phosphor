@@ -38,6 +38,7 @@ const PROFILE_BY_STYLE = Object.freeze({
   surveillance: 'mono', // NVG — P43 phosphor × luma
   thermal: 'mono', // FLIR — grayscale/Ironbow × luma
   noir: 'mono', // full desaturation
+  phosphor: 'mono', // one hue × luma
   nvg: 'mono', // cockpit vision names its modes directly
   retro: 'crt', // CRT — hue survives, small glyphs don't
 });

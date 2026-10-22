@@ -2,6 +2,7 @@ import { retroShader } from '../styles/retro.js';
 import { animeShader } from '../styles/anime.js';
 import { noirShader } from '../styles/noir.js';
 import { snowShader } from '../styles/snow.js';
+import { phosphorShader } from '../styles/phosphor.js';
 import { nightVisionShader } from '../styles/surveillance.js';
 import { thermalShader } from '../styles/thermal.js';
 import { BLOOM_INTENSITY_DEFAULT } from '../bloom.js';
@@ -17,6 +18,7 @@ export const STYLES = {
   anime: animeShader,
   noir: noirShader,
   snow: snowShader,
+  phosphor: phosphorShader,
 };
 
 /**
@@ -157,4 +159,5 @@ export const STYLE_STATUS_LABELS = {
   anime: msg('ANIME'),
   noir: msg('NOIR'),
   snow: msg('SNOW'),
+  phosphor: msg('PHOSPHOR'),
 };

@@ -1637,7 +1637,7 @@ try {
       reentered,
     };
   });
-  const cycleModes = ['optical', 'crt', 'nvg', 'thermal', 'anime', 'noir', 'snow', 'optical'];
+  const cycleModes = ['optical', 'crt', 'nvg', 'thermal', 'anime', 'noir', 'snow', 'phosphor', 'optical'];
   const cycleLabels = ['NORMAL', 'CRT', 'NVG', 'FLIR', 'ANIME', 'NOIR', 'SNOW', 'NORMAL'];
   check(
     'Cockpit vision control exposes Normal, CRT, NVG, FLIR, Anime, Noir and Snow before wrapping',
@@ -1661,7 +1661,7 @@ try {
     'each Cockpit vision mode drives only its own shader and Normal clears them all',
     visionCycle.states.slice(1, 7).every((state) => {
       const target = {
-        crt: 'retro', nvg: 'surveillance', thermal: 'thermal', anime: 'anime', noir: 'noir', snow: 'snow',
+        crt: 'retro', nvg: 'surveillance', thermal: 'thermal', anime: 'anime', noir: 'noir', snow: 'snow', phosphor: 'phosphor',
       }[state.mode];
       return Object.entries(state.intensities).every(([name, value]) =>
         name === target ? value > 0 : value === 0);

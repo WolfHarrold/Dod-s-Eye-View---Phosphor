@@ -14,7 +14,7 @@
  * dots" — a luminance RAMP failed in the field because dim free-flow dots
  * read as dark holes on NVG-bright roads; classification is the detection
  * brackets' job via `trafficBucketTier`, presence is the dots' job):
- *  - `mono` (surveillance/NVG, thermal/FLIR, noir): every colored dot is a
+ *  - `mono` (surveillance/NVG, thermal/FLIR, noir, phosphor): every colored dot is a
  *    bright white core with a thin black halo (local contrast survives any
  *    luma mapping, including Ironbow where white stays the hottest end);
  *    jam keeps a size bump so queues read as fat beads.
@@ -38,6 +38,7 @@ const PROFILE_BY_STYLE = {
   surveillance: 'mono', // NVG — P43 phosphor × luma
   thermal: 'mono', // FLIR — grayscale/ironbow × luma
   noir: 'mono', // full desaturation
+  phosphor: 'mono', // one hue × luma
   retro: 'crt', // CRT — hue survives, small dots don't
 };
 

@@ -209,6 +209,9 @@ test('no unchanged Realtime tool definition drifts silently', () => {
   const hudLayout = unchanged.find((tool) => tool.name === 'set_hud').parameters.properties.layout;
   assert.deepEqual(hudLayout.enum, ['tactical', 'operator', 'minimal', 'cyber']);
   hudLayout.enum = hudLayout.enum.filter((layout) => layout !== 'cyber');
+  // Phosphor adds one visual style; the rest of set_visual_style keeps its pin.
+  const visualStyle = unchanged.find((tool) => tool.name === 'set_visual_style').parameters.properties.style;
+  visualStyle.enum = visualStyle.enum.filter((name) => name !== 'phosphor');
   assert.equal(unchanged.length, 14);
   const digest = createHash('sha256')
     .update(JSON.stringify(unchanged))

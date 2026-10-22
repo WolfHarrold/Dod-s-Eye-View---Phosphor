@@ -10,8 +10,8 @@ import {
 } from './transitPresetStyle.js';
 import { TRANSIT_MODES } from './transitFeeds.js';
 
-test('profile mapping: NVG/FLIR/noir and cockpit nvg are mono, retro is crt, everything else normal', () => {
-  for (const mono of ['surveillance', 'thermal', 'noir', 'nvg'])
+test('profile mapping: NVG/FLIR/noir/phosphor and cockpit nvg are mono, retro is crt, everything else normal', () => {
+  for (const mono of ['surveillance', 'thermal', 'noir', 'phosphor', 'nvg'])
     assert.equal(transitStyleProfile(mono), 'mono', mono);
   assert.equal(transitStyleProfile('retro'), 'crt');
   for (const plain of [
