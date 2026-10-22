@@ -81,6 +81,7 @@ try {
     'anime',
     'noir',
     'snow',
+    'phosphor',
     'normal',
   ]) {
     await page.evaluate(

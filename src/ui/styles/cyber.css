@@ -753,6 +753,12 @@
   .btn-icon::before {
   content: '❄︎';
 }
+:root[data-ui-theme='cyber']
+  #command-dock
+  .style-btn[data-style='phosphor']
+  .btn-icon::before {
+  content: '▮';
+}
 
 :root[data-ui-theme='cyber'] :where(#bloom-toggle, #sharpen-toggle) {
   font-size: 0;

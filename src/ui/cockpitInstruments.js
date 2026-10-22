@@ -268,6 +268,7 @@ export function setVisionMode(mode, { revealParameters = false } = {}) {
     anime: t('ANIME'),
     noir: t('NOIR'),
     snow: t('SNOW'),
+    phosphor: t('PHOSPHOR'),
   };
   const names = {
     optical: t('Normal'),
@@ -277,6 +278,7 @@ export function setVisionMode(mode, { revealParameters = false } = {}) {
     anime: t('Anime'),
     noir: t('Noir'),
     snow: t('Snow'),
+    phosphor: t('Phosphor'),
   };
   if (this.visionCurrent) {
     this.visionCurrent.dataset.cockpitVision = next;

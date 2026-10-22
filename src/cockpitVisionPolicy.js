@@ -6,6 +6,7 @@ export const COCKPIT_VISION_MODES = Object.freeze([
   'anime',
   'noir',
   'snow',
+  'phosphor',
 ]);
 
 const TARGET_STYLE_BY_MODE = Object.freeze({
@@ -15,6 +16,7 @@ const TARGET_STYLE_BY_MODE = Object.freeze({
   anime: 'anime',
   noir: 'noir',
   snow: 'snow',
+  phosphor: 'phosphor',
 });
 
 const COCKPIT_MODE_BY_STYLE = Object.freeze({
@@ -25,6 +27,7 @@ const COCKPIT_MODE_BY_STYLE = Object.freeze({
   anime: 'anime',
   noir: 'noir',
   snow: 'snow',
+  phosphor: 'phosphor',
 });
 
 /** Normalize a requested Cockpit vision mode to the unfiltered Normal entry. */

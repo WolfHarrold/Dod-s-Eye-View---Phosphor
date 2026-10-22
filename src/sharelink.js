@@ -82,6 +82,11 @@ const SHARE_STYLE_PARAM_REGISTRY = Object.freeze({
     { key: 'density', token: 'd', min: 0, max: 1 },
     { key: 'wind', token: 'w', min: 0, max: 1 },
   ]),
+  phosphor: Object.freeze([
+    { key: 'tint', token: 't', min: 0, max: 1 },
+    { key: 'tiers', token: 'r', min: 0, max: 1 },
+    { key: 'scanlines', token: 's', min: 0, max: 1 },
+  ]),
 });
 
 export class ShareLinkManager {
