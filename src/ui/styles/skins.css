@@ -677,6 +677,9 @@ html:not([data-skin='phosphor']) .skin-radio-list button.now {
 }
 .skin-switch-phosphor {
   width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   height: 36px;
   border: 1px solid var(--ph-t1);
   background: #000;
@@ -1924,18 +1927,85 @@ html[data-skin='phosphor'] #skin-fx {
     width: 180px;
   }
 }
+/* Phones and portrait: the radio gets its own row under the menu and skin
+   buttons, the menu fills the width, and the footer keeps what matters. */
 @media (max-width: 760px) {
-  .skin-brand,
-  .skin-radio-btn.lucky,
-  .skin-radio-btn:not(.play),
-  .skin-top-right .skin-colour {
-    display: none;
+  html.skin-active {
+    --skin-top-h: 104px;
+    --skin-tree-w: 100vw;
+  }
+  .skin-top {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'left right'
+      'radio radio';
+    align-content: center;
+    row-gap: 8px;
+    gap: 8px;
+    padding: 0 10px;
+  }
+  .skin-top-left {
+    grid-area: left;
+  }
+  .skin-top-right {
+    grid-area: right;
+    min-width: 0;
+    gap: 6px;
+  }
+  .skin-radio {
+    grid-area: radio;
+    justify-self: stretch;
   }
   .skin-radio-display {
-    width: 120px;
+    flex: 1;
+    width: auto;
+  }
+  .skin-radio-panel {
+    width: calc(100vw - 20px);
+    max-height: min(420px, calc(100vh - 170px));
+  }
+  .skin-brand {
+    display: none;
+  }
+  .skin-top .skin-select {
+    max-width: 100px;
+  }
+  .skin-top-right {
+    justify-self: stretch;
+    justify-content: flex-end;
   }
   .skin-switch {
-    width: 170px;
+    flex: 0 1 220px;
+    width: auto;
+    min-width: 130px;
+  }
+  .skin-switch-kicker {
+    display: none;
+  }
+  .skin-tree-panel {
+    width: 100vw;
+    border-right: 0;
+  }
+  .skin-info {
+    min-height: 0;
+    max-height: 30%;
+  }
+  .skin-foot [data-skin-cell-skin],
+  .skin-foot [data-skin-cell-clock] {
+    display: none;
+  }
+  /* Side by side the corner readouts overlap, so each pair stacks. */
+  html.skin-active #intel-hud .hud-top-left {
+    top: 16px;
+  }
+  html.skin-active #intel-hud .hud-top-right {
+    top: 120px;
+  }
+  html.skin-active #intel-hud .hud-bottom-left {
+    bottom: 110px;
+  }
+  html.skin-active #intel-hud .hud-bottom-right {
+    bottom: 40px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

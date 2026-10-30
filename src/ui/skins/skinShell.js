@@ -691,7 +691,11 @@ export function initSkinShell({
   shell.hidden = false;
   html.classList.add('skin-active');
   applySkin(skin || DEFAULT_SKIN);
-  setMenu(true, { quiet: true });
+  // On a phone the open menu would cover the whole globe, so it starts closed.
+  const narrow =
+    documentRef.defaultView?.matchMedia?.('(max-width: 760px)').matches ===
+    true;
+  setMenu(!narrow, { quiet: true });
   if (!prefs.welcomeSeen && !sm.hasShareState) welcome.hidden = false;
   notices.log(
     'system',
