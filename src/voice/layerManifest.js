@@ -412,6 +412,28 @@ const layers = [
     },
   },
   {
+    id: 'latrobe-power',
+    aliases: [
+      'power stations',
+      'power output',
+      'loy yang',
+      'yallourn',
+      'latrobe power',
+      'open electricity',
+    ],
+    context: false,
+    query: {
+      fields: {
+        name: ['t'],
+        mw: ['n', 'MW'],
+        capacityMw: ['n', 'MW'],
+        unitsOnline: ['n'],
+        observedMs: ['ms'],
+      },
+      timeField: 'observedMs',
+    },
+  },
+  {
     id: 'local-places',
     aliases: [
       'places',

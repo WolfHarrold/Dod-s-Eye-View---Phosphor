@@ -40,7 +40,7 @@ test('the complete Realtime tool payload pins the manifest-generated layer relea
     // Air quality (ECCC AQHI) extends the manifest.
     // Phosphor adds one set_visual_style value.
     // Australian weather (BoM) extends the manifest.
-    '739088ca5dbbaa0ca4f33d4fb9dc2c5e3fcb9c8fb5cb129bfe049daeb6b29ad9',
+    '78df894150ddce6a54ab2fcbdc2496aaff70d2bd456c6c3e41d3171aff828f0a',
   );
 });
 

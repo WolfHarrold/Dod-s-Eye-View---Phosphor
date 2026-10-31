@@ -2534,6 +2534,10 @@
       "src/layers/places/index.js",
       "src/layers/places/model.js",
       "src/layers/places/source.js",
+      "src/app/layers/latrobePower.js",
+      "src/layers/power/index.js",
+      "src/layers/power/model.js",
+      "src/layers/power/source.js",
       "src/ui/statusText.js",
       "src/layers/streetLevel/providers/mapillary/policy.js",
       "src/voice/providerCommands.js",
@@ -3116,7 +3120,11 @@
       "src/layers/places/model.js",
       "src/layers/places/source.js",
       "src/layers/places/index.js",
-      "src/app/layers/localPlaces.js"
+      "src/app/layers/localPlaces.js",
+      "src/layers/power/model.js",
+      "src/layers/power/source.js",
+      "src/layers/power/index.js",
+      "src/app/layers/latrobePower.js"
     ],
     "external": [
       "hls.js",

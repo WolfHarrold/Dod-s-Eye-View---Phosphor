@@ -64,6 +64,7 @@ const PANEL_GROUPS = [
       'telegeography-submarine-cables',
       'local-dams',
       'local-places',
+      'latrobe-power',
     ],
   },
   {

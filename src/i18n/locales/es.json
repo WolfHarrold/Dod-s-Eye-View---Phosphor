@@ -3402,5 +3402,28 @@
   "Places of interest": "Lugares de interés",
   "Places of Interest": "Lugares de Interés",
   "Heritage places, landmarks, parks, Gunaikurnai places and 4-star attractions in Victoria.": "Lugares patrimoniales, hitos, parques, lugares gunaikurnai y atracciones de 4 estrellas en Victoria.",
-  "Adds coloured place markers. Zoom in to load them.": "Añade marcadores de lugares de colores. Acerca la vista para cargarlos."
+  "Adds coloured place markers. Zoom in to load them.": "Añade marcadores de lugares de colores. Acerca la vista para cargarlos.",
+  "Power output unavailable": "Producción eléctrica no disponible",
+  "Add an Open Electricity key in Data Keys & Providers": "Añade una clave de Open Electricity en Claves de datos y proveedores",
+  "Open Electricity is running late": "Open Electricity va con retraso",
+  "Victorian spot price {price} $/MWh": "Precio spot de Victoria {price} $/MWh",
+  "As of {time} AEST": "A las {time} AEST",
+  "Power stations": "Centrales eléctricas",
+  "{count} of {total} units running": {
+    "one": "{count} de {total} unidades en marcha",
+    "many": "{count} de {total} unidades en marcha",
+    "other": "{count} de {total} unidades en marcha"
+  },
+  "{change} MW in the last hour": "{change} MW en la última hora",
+  "Offline": "Detenida",
+  "Under half load": "Menos de media carga",
+  "Half load or more": "Media carga o más",
+  "Power request timed out": "La solicitud de energía agotó el tiempo",
+  "Open Electricity rejected the key": "Open Electricity rechazó la clave",
+  "Malformed power response": "Respuesta de energía mal formada",
+  "Live output of the Latrobe Valley power stations": "Producción en directo de las centrales del valle de Latrobe",
+  "Latrobe Valley power": "Energía del valle de Latrobe",
+  "Latrobe Valley Power": "Energía del Valle de Latrobe",
+  "Live output of Loy Yang A, Loy Yang B and Yallourn W from Open Electricity.": "Producción en directo de Loy Yang A, Loy Yang B y Yallourn W, de Open Electricity.",
+  "Adds a column at each station that rises with its output. Needs a free Open Electricity key.": "Añade una columna en cada central que crece con su producción. Necesita una clave gratuita de Open Electricity."
 }

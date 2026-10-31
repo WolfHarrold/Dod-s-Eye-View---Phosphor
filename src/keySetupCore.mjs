@@ -98,6 +98,14 @@ export const KEY_SETUP_KEYS = Object.freeze([
     tier: 'free',
   }),
   Object.freeze({
+    id: 'openelectricity',
+    title: 'OPEN ELECTRICITY', // i18n-ignore: provider product name
+    unlocks: msg('Live output of the Latrobe Valley power stations'),
+    getUrl: 'https://platform.openelectricity.org.au',
+    envVars: Object.freeze(['OPENELECTRICITY_API_KEY']),
+    tier: 'free',
+  }),
+  Object.freeze({
     id: 'cesium-ion',
     title: 'CESIUM ION', // i18n-ignore: provider product name
     unlocks: msg('Bing imagery map stacks + world terrain'),

@@ -184,6 +184,13 @@ export const DATA_CREDITS = [
       '· free for non-commercial use · <a href="https://www.bom.gov.au/other/copyright.shtml" target="_blank" rel="noopener">© Commonwealth of Australia</a>',
   },
   {
+    key: 'latrobe-power',
+    html:
+      'Power station output and Victorian spot price: ' +
+      '<a href="https://openelectricity.org.au" target="_blank" rel="noopener">Open Electricity</a> ' +
+      '(<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>), from AEMO data',
+  },
+  {
     key: 'local-places',
     html:
       'Places of interest: Vicmap Features of Interest and parks, ' +

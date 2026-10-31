@@ -3469,5 +3469,29 @@
   "Places of interest": "Интересные места",
   "Places of Interest": "Интересные места",
   "Heritage places, landmarks, parks, Gunaikurnai places and 4-star attractions in Victoria.": "Объекты наследия, ориентиры, парки, места гунайкурнай и достопримечательности с 4 звёздами в Виктории.",
-  "Adds coloured place markers. Zoom in to load them.": "Добавляет цветные метки мест. Приблизьте карту, чтобы загрузить их."
+  "Adds coloured place markers. Zoom in to load them.": "Добавляет цветные метки мест. Приблизьте карту, чтобы загрузить их.",
+  "Power output unavailable": "Данные о выработке недоступны",
+  "Add an Open Electricity key in Data Keys & Providers": "Добавьте ключ Open Electricity в разделе «Ключи данных и провайдеры»",
+  "Open Electricity is running late": "Open Electricity запаздывает",
+  "Victorian spot price {price} $/MWh": "Спотовая цена в Виктории {price} $/МВт·ч",
+  "As of {time} AEST": "По состоянию на {time} AEST",
+  "Power stations": "Электростанции",
+  "{count} of {total} units running": {
+    "one": "Работает {count} из {total} блоков",
+    "few": "Работают {count} из {total} блоков",
+    "many": "Работают {count} из {total} блоков",
+    "other": "Работают {count} из {total} блоков"
+  },
+  "{change} MW in the last hour": "{change} МВт за последний час",
+  "Offline": "Остановлена",
+  "Under half load": "Меньше половины мощности",
+  "Half load or more": "Половина мощности и больше",
+  "Power request timed out": "Время запроса данных об энергии истекло",
+  "Open Electricity rejected the key": "Open Electricity отклонил ключ",
+  "Malformed power response": "Некорректный ответ о выработке",
+  "Live output of the Latrobe Valley power stations": "Текущая выработка электростанций долины Латроб",
+  "Latrobe Valley power": "Энергетика долины Латроб",
+  "Latrobe Valley Power": "Энергетика долины Латроб",
+  "Live output of Loy Yang A, Loy Yang B and Yallourn W from Open Electricity.": "Текущая выработка Loy Yang A, Loy Yang B и Yallourn W по данным Open Electricity.",
+  "Adds a column at each station that rises with its output. Needs a free Open Electricity key.": "Добавляет столбец над каждой станцией, растущий вместе с выработкой. Нужен бесплатный ключ Open Electricity."
 }

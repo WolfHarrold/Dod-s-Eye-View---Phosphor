@@ -12,3 +12,8 @@
   looking at, and shows Durt-Yowan (Latrobe River) by its Gunaikurnai name.
   Data comes through a new `/api/local-places` proxy; Google ratings need the
   existing Google server key.
+- Latrobe Valley power: a new Infrastructure layer shows the live output of
+  Loy Yang A, Loy Yang B and Yallourn W from Open Electricity as columns that
+  rise with each station's megawatts, lists how many units are running and
+  the last hour's change, and shows the Victorian spot price. It needs a free
+  Open Electricity key, which now has its own row in the key panel.

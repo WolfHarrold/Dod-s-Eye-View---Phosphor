@@ -202,8 +202,8 @@ function encode(state) {
 
 test('production registry is exact, canonical, and rejects incomplete contracts', async () => {
   assert.equal(validateLayerStateRegistry(), true);
-  assert.equal(REGISTERED_LAYER_IDS.length, 33);
-  assert.equal(new Set(REGISTERED_LAYER_IDS).size, 33);
+  assert.equal(REGISTERED_LAYER_IDS.length, 34);
+  assert.equal(new Set(REGISTERED_LAYER_IDS).size, 34);
   assert.ok(REGISTERED_LAYER_IDS.includes('transit'));
   assert.deepEqual(REGISTERED_LAYER_IDS, [...REGISTERED_LAYER_IDS].sort());
   assert.deepEqual(LEGACY_LAYER_STATE_TOKENS, {
@@ -247,7 +247,17 @@ test('production registry is exact, canonical, and rejects incomplete contracts'
   const freeDigits = [...'0123456789'].filter(
     (digit) => !Object.values(LAYER_STATE_TOKEN_RESERVATIONS).includes(digit),
   );
-  const [d1, d2, d3] = freeDigits;
+  // The next three tokens in allocation order: free digits, then '00', '01'.
+  const upcoming = [];
+  for (
+    let reserved = { ...LAYER_STATE_TOKEN_RESERVATIONS };
+    upcoming.length < 3;
+  ) {
+    const token = nextLayerStateToken(reserved);
+    upcoming.push(token);
+    reserved = { ...reserved, [`upcoming-${token}`]: token };
+  }
+  const [d1, d2, d3] = upcoming;
   assert.equal(nextLayerStateToken(), d1);
   assert.equal(
     nextLayerStateToken({

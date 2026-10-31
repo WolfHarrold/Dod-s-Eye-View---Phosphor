@@ -179,6 +179,16 @@ export const LAYER_MENU = Object.freeze({
     desc: msg('Mapped data centres.'),
     result: msg('Adds site markers. Zoom in to load them.'),
   },
+  'latrobe-power': {
+    group: 'ground',
+    label: msg('Latrobe Valley Power'),
+    desc: msg(
+      'Live output of Loy Yang A, Loy Yang B and Yallourn W from Open Electricity.',
+    ),
+    result: msg(
+      'Adds a column at each station that rises with its output. Needs a free Open Electricity key.',
+    ),
+  },
   'local-places': {
     group: 'ground',
     label: msg('Places of Interest'),
