@@ -135,7 +135,7 @@ test('reservation ledger is complete, pinned, and rejects duplicate or malformed
     { ...parseLayerStateTokenReservations(reservationRows) },
     { ...LAYER_STATE_TOKEN_RESERVATIONS },
   );
-  assert.equal(Object.keys(LAYER_STATE_TOKEN_RESERVATIONS).length, 32);
+  assert.equal(Object.keys(LAYER_STATE_TOKEN_RESERVATIONS).length, 33);
   assert.deepEqual(
     { ...LAYER_STATE_TOKEN_RESERVATIONS },
     {
@@ -144,6 +144,7 @@ test('reservation ledger is complete, pinned, and rejects duplicate or malformed
       'gnss-integrity': '3',
       'air-quality': '4',
       'bom-weather': '5',
+      'local-places': '6',
     },
   );
   assert.throws(

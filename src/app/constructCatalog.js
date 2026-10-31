@@ -26,6 +26,7 @@ import { createApplicationFirms } from './layers/firms.js';
 import { createApplicationEarthquakes } from './layers/earthquakes.js';
 import { createApplicationAirQuality } from './layers/airQuality.js';
 import { createApplicationBomWeather } from './layers/bomWeather.js';
+import { createApplicationLocalPlaces } from './layers/localPlaces.js';
 import { createApplicationFirePerimeters } from './layers/perimeters.js';
 import { createApplicationGnssIntegrity } from './layers/gnss.js';
 import { createApplicationCables } from './layers/submarineCables.js';
@@ -122,6 +123,7 @@ export function createApplicationCatalog({
         createApplicationEarthquakes({ source: sources.earthquakes }),
         createApplicationAirQuality({ source: sources['air-quality'] }),
         createApplicationBomWeather({ source: sources['bom-weather'] }),
+        createApplicationLocalPlaces({ source: sources['local-places'] }),
         createApplicationFirePerimeters({
           source: sources['fire-perimeters'],
         }),

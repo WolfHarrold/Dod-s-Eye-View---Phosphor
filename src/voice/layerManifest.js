@@ -412,6 +412,27 @@ const layers = [
     },
   },
   {
+    id: 'local-places',
+    aliases: [
+      'places',
+      'places of interest',
+      'heritage',
+      'landmarks',
+      'attractions',
+      'tourist attractions',
+    ],
+    context: false,
+    query: {
+      fields: {
+        name: ['t'],
+        category: ['t'],
+        kind: ['t'],
+        rating: ['n'],
+        reviews: ['n'],
+      },
+    },
+  },
+  {
     id: 'telegeography-submarine-cables',
     aliases: ['submarine cables', 'undersea cables', 'cables', 'telegeography'],
     context: false,

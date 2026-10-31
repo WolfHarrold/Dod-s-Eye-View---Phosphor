@@ -179,6 +179,14 @@ export const LAYER_MENU = Object.freeze({
     desc: msg('Mapped data centres.'),
     result: msg('Adds site markers. Zoom in to load them.'),
   },
+  'local-places': {
+    group: 'ground',
+    label: msg('Places of Interest'),
+    desc: msg(
+      'Heritage places, landmarks, parks, Gunaikurnai places and 4-star attractions in Victoria.',
+    ),
+    result: msg('Adds coloured place markers. Zoom in to load them.'),
+  },
   'local-dams': {
     group: 'ground',
     label: msg('Dams'),

@@ -2530,6 +2530,10 @@
       "src/layers/bom/index.js",
       "src/layers/bom/model.js",
       "src/layers/bom/source.js",
+      "src/app/layers/localPlaces.js",
+      "src/layers/places/index.js",
+      "src/layers/places/model.js",
+      "src/layers/places/source.js",
       "src/ui/statusText.js",
       "src/layers/streetLevel/providers/mapillary/policy.js",
       "src/voice/providerCommands.js",
@@ -3108,7 +3112,11 @@
       "src/layers/bom/model.js",
       "src/layers/bom/source.js",
       "src/layers/bom/index.js",
-      "src/app/layers/bomWeather.js"
+      "src/app/layers/bomWeather.js",
+      "src/layers/places/model.js",
+      "src/layers/places/source.js",
+      "src/layers/places/index.js",
+      "src/app/layers/localPlaces.js"
     ],
     "external": [
       "hls.js",

@@ -29,6 +29,7 @@ import { gnssIntegrityProxy } from './gnssIntegrity.js';
 import { cycloneProxy } from './cyclones.js';
 import { windProxy } from './wind.js';
 import { bomProxy } from './bom.js';
+import { localPlacesProxy } from './localPlaces.js';
 
 /**
  * Construct the local provider plugins in their established order.
@@ -62,6 +63,7 @@ function localProviderPlugins({ realtime, gemini } = {}) {
     windProxy(),
     weatherProxy(),
     bomProxy(),
+    localPlacesProxy(),
     cycloneProxy(),
     mapillaryProxy(),
     firePerimetersProxy(),

@@ -184,6 +184,15 @@ export const DATA_CREDITS = [
       '· free for non-commercial use · <a href="https://www.bom.gov.au/other/copyright.shtml" target="_blank" rel="noopener">© Commonwealth of Australia</a>',
   },
   {
+    key: 'local-places',
+    html:
+      'Places of interest: Vicmap Features of Interest and parks, ' +
+      '<a href="https://www.land.vic.gov.au/maps-and-spatial/spatial-data/vicmap-catalogue" target="_blank" rel="noopener">© State of Victoria</a> (CC BY 4.0) ' +
+      '· <a href="https://vhd.heritagecouncil.vic.gov.au/" target="_blank" rel="noopener">Victorian Heritage Database</a>, Heritage Council of Victoria ' +
+      '· Gunaikurnai place names shared with the support of GLaWAC ' +
+      '· ratings from Google Maps',
+  },
+  {
     key: 'overture-military-names',
     html: 'Military area names: <a href="https://overturemaps.org" target="_blank" rel="noopener">Overture Maps Foundation</a> (ODbL)',
   },

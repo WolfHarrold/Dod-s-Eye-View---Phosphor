@@ -20,6 +20,7 @@ import { createCycloneSource } from '../layers/cyclones/source.js';
 import { createWindSource } from '../layers/wind/source.js';
 import { createFirmsSource } from '../layers/firms/source.js';
 import { createBomSource } from '../layers/bom/source.js';
+import { createPlacesSource } from '../layers/places/source.js';
 import { createMapillarySource } from '../layers/streetLevel/providers/mapillary/source.js';
 import { createReferenceSources } from '../sources/reference.js';
 export { createReferenceSources as createStandaloneReferenceSources } from '../sources/reference.js';
@@ -55,6 +56,7 @@ export function createStandaloneLayerSources(overrides = {}) {
     weather: createWeatherSource(),
     cyclones: createCycloneSource(),
     'bom-weather': createBomSource(),
+    'local-places': createPlacesSource(),
     mapillary: createMapillarySource({
       token: import.meta.env?.MAPILLARY_CLIENT_TOKEN || '',
     }),
