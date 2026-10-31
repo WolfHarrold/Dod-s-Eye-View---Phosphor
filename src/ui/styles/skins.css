@@ -2209,7 +2209,7 @@ html:not([data-skin='phosphor']) .skin-fav-collapse {
 #skin-shell > .skin-windows {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 4;
   pointer-events: none;
 }
 /* ── Floating tool windows ──────────────────────────────────────────────

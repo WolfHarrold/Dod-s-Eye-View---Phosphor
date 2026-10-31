@@ -201,7 +201,7 @@ export function initSkinShell({
     leftInset: () =>
       treePanel?.hidden === false ? treePanel.getBoundingClientRect().right : 0,
   });
-  function openPanel(panelId, layerId, title) {
+  function openPanel(panelId, layerId, title, { side } = {}) {
     const panel = $(panelId);
     if (!panel) return false;
     if (layerId && !layer(layerId)?.enabled) void setLayer(layerId, true);
@@ -209,6 +209,7 @@ export function initSkinShell({
     sm.setPanelCollapsed?.(panelId, false, { explicit: true });
     return windows.open(panel, {
       title: t(title || windowTitles.get(panelId) || ''),
+      side,
     });
   }
 
@@ -291,6 +292,7 @@ export function initSkinShell({
       )
         windows.open($(panelId), {
           title: t(windowTitles.get(panelId) || ''),
+          side: 'right',
         });
       return result;
     };
@@ -298,7 +300,8 @@ export function initSkinShell({
   const streetPhoto = $('sl-viewer-wrap');
   const streetPhotoObserver = streetPhoto
     ? new MutationObserver(() => {
-        if (!streetPhoto.hidden) openPanel('street-level-panel');
+        if (!streetPhoto.hidden)
+          openPanel('street-level-panel', null, null, { side: 'right' });
       })
     : null;
   streetPhotoObserver?.observe(streetPhoto, {

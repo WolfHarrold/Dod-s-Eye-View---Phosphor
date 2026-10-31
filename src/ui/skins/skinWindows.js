@@ -115,17 +115,19 @@ export function createWindowManager({ documentRef, host, log, leftInset }) {
       other.classList.toggle('skin-window-front', other === panel);
   }
 
-  function firstRect() {
+  function firstRect(side) {
     const area = bounds();
     const width = Math.min(460, area.right - area.left - 32);
     const height = Math.min(640, area.bottom - area.top - 24);
     const step = (opened % 6) * CASCADE_STEP;
     opened += 1;
-    // Beside the menu, where the eye already is; Favourites keeps the right.
-    const x = Math.min(
-      (leftInset?.() || 0) + 16 + step,
-      area.right - width - 16,
-    );
+    // From the menu: beside it, where the eye already is. Opened by the app
+    // itself (a picked camera, a street photo): on the right, where those
+    // panels always were, so the middle of the globe stays clear.
+    const x =
+      side === 'right'
+        ? Math.max((leftInset?.() || 0) + 16, area.right - width - 16 - step)
+        : Math.min((leftInset?.() || 0) + 16 + step, area.right - width - 16);
     return { x, y: area.top + 12 + step, width, height };
   }
 
@@ -194,7 +196,7 @@ export function createWindowManager({ documentRef, host, log, leftInset }) {
    * Show `panel` as a window. Opening one that is already open brings it
    * to the front.
    */
-  function open(panel, { title = '', onClose } = {}) {
+  function open(panel, { title = '', onClose, side = 'left' } = {}) {
     if (!panel) return false;
     const frame = frameFor(panel, title, onClose);
     if (!panel.classList.contains('skin-window')) {
@@ -202,7 +204,7 @@ export function createWindowManager({ documentRef, host, log, leftInset }) {
         panel.before(frame.home);
         host.append(panel);
       }
-      paint(panel, frame.rect || firstRect());
+      paint(panel, frame.rect || firstRect(side));
       panel.classList.add('skin-window', 'skin-panel-open');
     }
     front(panel);
