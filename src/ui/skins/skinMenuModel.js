@@ -254,6 +254,14 @@ export const LAYER_MENU = Object.freeze({
     desc: msg('Animated wind flow.'),
     result: msg('Adds moving streaks. Heavier on the graphics card.'),
   },
+  'bom-weather': {
+    group: 'hazards',
+    label: msg('Australian Weather (BoM)'),
+    desc: msg(
+      'Bureau of Meteorology rain radar and station temperatures for Gippsland and Melbourne.',
+    ),
+    result: msg('Adds a looping radar and temperature markers.'),
+  },
   'air-quality': {
     group: 'hazards',
     label: msg('Air Quality'),

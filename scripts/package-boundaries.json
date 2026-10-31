@@ -2526,6 +2526,10 @@
       "src/layers/airQuality/index.js",
       "src/layers/airQuality/model.js",
       "src/layers/airQuality/source.js",
+      "src/app/layers/bomWeather.js",
+      "src/layers/bom/index.js",
+      "src/layers/bom/model.js",
+      "src/layers/bom/source.js",
       "src/ui/statusText.js",
       "src/layers/streetLevel/providers/mapillary/policy.js",
       "src/voice/providerCommands.js",
@@ -3100,7 +3104,11 @@
       "src/layers/airQuality/source.js",
       "src/ui/statusText.js",
       "src/ui/layerNames.js",
-      "src/layers/streetLevel/providers/mapillary/policy.js"
+      "src/layers/streetLevel/providers/mapillary/policy.js",
+      "src/layers/bom/model.js",
+      "src/layers/bom/source.js",
+      "src/layers/bom/index.js",
+      "src/app/layers/bomWeather.js"
     ],
     "external": [
       "hls.js",

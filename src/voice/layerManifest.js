@@ -269,6 +269,31 @@ const layers = [
     },
   },
   {
+    id: 'bom-weather',
+    aliases: [
+      'bom',
+      'bureau of meteorology',
+      'australian weather',
+      'australian radar',
+      'temperature',
+      'thermometers',
+    ],
+    context: false,
+    query: {
+      fields: {
+        name: ['t'],
+        tempC: ['n', '°C'],
+        apparentC: ['n', '°C'],
+        humidity: ['n', '%'],
+        wind: ['t'],
+        gustKmh: ['n', 'km/h'],
+        rainMm: ['n', 'mm'],
+        observedMs: ['ms'],
+      },
+      timeField: 'observedMs',
+    },
+  },
+  {
     id: 'traffic',
     aliases: ['street traffic', 'road traffic', 'congestion'],
     context: false,

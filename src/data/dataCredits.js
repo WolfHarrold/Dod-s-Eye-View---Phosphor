@@ -177,6 +177,13 @@ export const DATA_CREDITS = [
       '· <a href="https://eccc-msc.github.io/open-data/licence/readme_en/" target="_blank" rel="noopener">ECCC Data Servers End-use Licence</a>',
   },
   {
+    key: 'bom-weather',
+    html:
+      'Australian radar and station observations: ' +
+      '<a href="https://www.bom.gov.au/catalogue/data-feeds.shtml" target="_blank" rel="noopener">Bureau of Meteorology</a> ' +
+      '· free for non-commercial use · <a href="https://www.bom.gov.au/other/copyright.shtml" target="_blank" rel="noopener">© Commonwealth of Australia</a>',
+  },
+  {
     key: 'overture-military-names',
     html: 'Military area names: <a href="https://overturemaps.org" target="_blank" rel="noopener">Overture Maps Foundation</a> (ODbL)',
   },
