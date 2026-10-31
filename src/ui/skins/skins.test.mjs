@@ -9,7 +9,13 @@ import {
 } from './skinCatalog.js';
 import { BOOT_LOGIN_MASK, BOOT_PASSWORD } from './skinBoot.js';
 import { buildMenuTree, nodeMatches, walkTree } from './skinMenuModel.js';
-import { distanceBand, distanceKm, pickLuckyStation } from './skinRadio.js';
+import {
+  distanceBand,
+  distanceKm,
+  pickLuckyStation,
+  stationGenre,
+  stationName,
+} from './skinRadio.js';
 import { logTime } from './skinNotices.js';
 
 function memoryStorage(initial = {}) {
@@ -225,6 +231,52 @@ test('Feeling Lucky walks outward from the nearest unheard station, then wraps',
     station: null,
     wrapped: false,
   });
+});
+
+test('Feeling Lucky skips stations that failed to play', () => {
+  const ranked = ['a', 'b', 'c'].map((id, km) => ({ station: { id }, km }));
+  const failed = new Set(['a']);
+  assert.equal(pickLuckyStation(ranked, new Set(), failed).station.id, 'b');
+  assert.deepEqual(
+    pickLuckyStation(ranked, new Set(['b', 'c']), failed).station.id,
+    'b',
+  );
+  assert.deepEqual(
+    pickLuckyStation(ranked, new Set(), new Set(['a', 'b', 'c'])),
+    {
+      station: null,
+      wrapped: false,
+    },
+  );
+});
+
+test('live directory tags fold into a short list of genres', () => {
+  const genre = (...tags) => stationGenre({ tags });
+  // Spellings seen side by side in the live directory.
+  for (const tag of ['80s', '80er', "80's", '1930', '78', 'classic vinyl'])
+    assert.equal(genre(tag), 'Oldies', tag);
+  // A network or band tag first falls through to the next tag.
+  assert.equal(genre('dab', 'capital', 'pop'), 'Pop');
+  assert.equal(genre('#', 'anthems'), 'Dance & Electronic');
+  assert.equal(genre('noaa weather radio'), 'Weather');
+  assert.equal(genre('k pop'), 'World');
+  assert.equal(genre('dancehall'), 'Reggae');
+  assert.equal(genre('classic rock'), 'Rock');
+  assert.equal(genre('choral'), 'Classical');
+  assert.equal(genre('dab', 'capital'), '');
+  assert.equal(genre(), '');
+});
+
+test('station names decode the HTML entities the directory sends', () => {
+  assert.equal(
+    stationName({ name: 'KISS - The Best Vibes &amp; Energy' }),
+    'KISS - The Best Vibes & Energy',
+  );
+  assert.equal(
+    stationName({ name: 'Rock &#39;n&#x27; Roll' }),
+    "Rock 'n' Roll",
+  );
+  assert.equal(stationName({ name: 'Fish &chips; &#1;' }), 'Fish &chips; &#1;');
 });
 
 test('station distances fall into the finder bands', () => {

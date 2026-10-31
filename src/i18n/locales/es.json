@@ -3339,5 +3339,17 @@
   "I'll explore myself": "Exploraré por mi cuenta",
   "ACTION LOG": "REGISTRO DE ACCIONES",
   "CLOSE": "CERRAR",
-  "ANY KEY TO SKIP": "CUALQUIER TECLA PARA SALTAR"
+  "ANY KEY TO SKIP": "CUALQUIER TECLA PARA SALTAR",
+  "Sports": "Deportes",
+  "Comedy": "Comedia",
+  "Blues & Soul": "Blues y soul",
+  "Hip Hop": "Hip hop",
+  "Religious": "Religiosa",
+  "Country & Folk": "Country y folk",
+  "Dance & Electronic": "Dance y electrónica",
+  "Ambient & Chill": "Ambient y chill",
+  "Kids": "Infantil",
+  "Public & Community": "Pública y comunitaria",
+  "{name} is off air, trying the next station": "{name} está fuera del aire, probando la siguiente emisora",
+  "The station did not start playing.": "La emisora no empezó a sonar."
 }
