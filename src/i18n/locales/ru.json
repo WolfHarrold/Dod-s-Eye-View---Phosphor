@@ -3418,5 +3418,8 @@
   "Kids": "Детское",
   "Public & Community": "Общественное радио",
   "{name} is off air, trying the next station": "{name} не в эфире, пробуем следующую станцию",
-  "The station did not start playing.": "Станция не начала воспроизведение."
+  "The station did not start playing.": "Станция не начала воспроизведение.",
+  "Emergency & Traffic": "Экстренные службы и трафик",
+  "Reggae & Caribbean": "Регги и Карибы",
+  "Eclectic": "Эклектика"
 }

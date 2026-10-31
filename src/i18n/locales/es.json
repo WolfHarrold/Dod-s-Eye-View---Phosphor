@@ -3351,5 +3351,8 @@
   "Kids": "Infantil",
   "Public & Community": "Pública y comunitaria",
   "{name} is off air, trying the next station": "{name} está fuera del aire, probando la siguiente emisora",
-  "The station did not start playing.": "La emisora no empezó a sonar."
+  "The station did not start playing.": "La emisora no empezó a sonar.",
+  "Emergency & Traffic": "Emergencias y tráfico",
+  "Reggae & Caribbean": "Reggae y Caribe",
+  "Eclectic": "Ecléctica"
 }

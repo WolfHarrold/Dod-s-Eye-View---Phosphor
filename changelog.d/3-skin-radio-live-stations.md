@@ -4,6 +4,8 @@
   show OFF AIR in the finder. The Genre tab groups stations into about twenty
   genres instead of one group per free-text tag (80s, 80er and 80's were three
   groups, and network tags such as "dab" became genres); a station with no
-  usable tag is sorted by its name. Station names
+  usable tag is sorted by its name, and about eighty popular stations with no
+  useful tags or name have a hand-checked genre in
+  `src/ui/skins/stationGenres.js`. Station names
   show "&" instead of "&amp;". `tools/radio-live-probe.mjs` checks the
   directory, the finder views and a sample of streams against live stations.

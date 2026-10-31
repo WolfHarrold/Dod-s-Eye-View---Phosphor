@@ -1,4 +1,5 @@
 import { t, msg, formatNumber } from '../../i18n/index.js';
+import { STATION_GENRES } from './stationGenres.js';
 
 const EARTH_RADIUS_KM = 6371;
 
@@ -24,27 +25,37 @@ const STALL_MS = 15_000;
 // tag is matched against these buckets in the station's own tag order. World
 // sits above Pop so "k pop" lands there, Reggae above Dance for "dancehall".
 const GENRES = [
-  [msg('News'), /\bnews\b|nachrichten|noticias|actualit/],
+  [
+    msg('Emergency & Traffic'),
+    /emergency|scanner|police|public safety|\bfire\b|traffic|advisory/,
+  ],
+  [
+    msg('News'),
+    /\bnews\b|nachrichten|noticias|actualit|\binfo\b|econom|новости/,
+  ],
   [msg('Weather'), /weather|noaa/],
   [msg('Sports'), /sport/],
   [msg('Comedy'), /comedy|humou?r/],
-  [msg('Talk'), /talk|spoken|podcast|interview|old time radio|drama/],
-  [msg('Classical'), /classical|klassik|opera|baroque|choral|symphon/],
+  [msg('Talk'), /talk|spoken|podcast|interview|old time radio|drama|разговор/],
+  [msg('Classical'), /classical|klassik|opera|baroque|choral|symphon|composer/],
   [msg('Jazz'), /jazz|swing|bebop|big band/],
   [msg('Blues & Soul'), /blues|soul|funk|r ?& ?b|rnb|motown/],
   [msg('Hip Hop'), /hip ?hop|\brap\b|trap|grime/],
-  [msg('Reggae'), /reggae|\bska\b|dancehall|dub\b/],
+  [
+    msg('Reggae & Caribbean'),
+    /reggae|\bska\b|dancehall|dub\b|soca|calypso|zouk|kompa/,
+  ],
   [
     msg('Religious'),
-    /christ|gospel|worship|relig|catholic|islam|quran|church|bible|spiritual/,
+    /christ|gospel|worship|relig|catholic|islam|quran|church|bible|spiritual|devotional|bhakti|hindu/,
   ],
   [
     msg('Latin'),
-    /latin|salsa|reggaeton|bachata|cumbia|tropical|ranchera|mariachi|mexican|flamenco|tango|bossa|samba/,
+    /latin|salsa|reggaeton|bachata|cumbia|tropical|ranchera|mariachi|mexican|flamenco|tango|bossa|samba|\bmpb\b|romantica/,
   ],
   [
     msg('World'),
-    /world|bollywood|hindi|arab|afro|african|k ?pop|j ?pop|celtic|greek|turk|persian|indian|asian|balkan|chanson|traditional/,
+    /world|bollywood|hindi|arab|afro|african|k ?pop|j ?pop|japan|celtic|greek|turk|persian|indian|asian|balkan|chanson|traditional|dangdut|koplo|campursari|melayu|manele|italiana|portuguese music|armenian|bangla|nepali|kurd/,
   ],
   [
     msg('Country & Folk'),
@@ -53,7 +64,7 @@ const GENRES = [
   [msg('Rock'), /rock|metal|punk|grunge|indie|alternative/],
   [
     msg('Dance & Electronic'),
-    /dance|electr|house|techno|trance|edm|club|dubstep|drum|dnb|disco|anthems|beats/,
+    /dance|electr|house|techno|trance|edm|club|dubstep|drum|dnb|disco|anthems|beats|hardcore|hardstyle|\bidm\b|vaporwave|chiptune|video game/,
   ],
   [
     msg('Ambient & Chill'),
@@ -65,25 +76,34 @@ const GENRES = [
   ],
   [
     msg('Pop'),
-    /\bpop\b|top ?40|\bhits?\b|charts?|adult contemporary|\bchr\b|\bac\b/,
+    /\bpop\b|top ?40|\bhits?\b|charts?|contemporary|\bchr\b|\bac\b|mainstream|middle of the road|\blight\b/,
   ],
   [msg('Kids'), /kids|children|kinder/],
   [
     msg('Public & Community'),
-    /community|college|university|public radio|\bnpr\b|\bbbc\b|variety|local/,
+    /community|college|university|public radio|\bnpr\b|\bbbc\b|local/,
+  ],
+  [
+    msg('Eclectic'),
+    /eclectic|various|\bmisc|variety|freeform|experimental|new music|collaborative/,
   ],
 ];
+
+/** The English genre names, for checking the hand-made station list. */
+export const GENRE_NAMES = Object.freeze(GENRES.map(([name]) => name));
 
 const genreOf = (text) =>
   GENRES.find(([, pattern]) => pattern.test(text.toLocaleLowerCase()));
 
 /**
- * The station's genre bucket, or an empty string when nothing fits one. Tags
- * win; a station with no usable tag is often named for what it plays
- * ("Adroit Jazz Underground", "100 Best Ibiza Deep House"), so its name is
- * tried next.
+ * The station's genre bucket, or an empty string when nothing fits one. A
+ * hand-checked entry in STATION_GENRES wins, then tags; a station with no
+ * usable tag is often named for what it plays ("Adroit Jazz Underground",
+ * "100 Best Ibiza Deep House"), so its name is tried last.
  */
 export function stationGenre(station) {
+  const known = STATION_GENRES[station?.id];
+  if (known) return t(known);
   for (const tag of station?.tags || []) {
     const bucket = genreOf(String(tag || ''));
     if (bucket) return t(bucket[0]);

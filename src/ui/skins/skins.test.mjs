@@ -15,7 +15,9 @@ import {
   pickLuckyStation,
   stationGenre,
   stationName,
+  GENRE_NAMES,
 } from './skinRadio.js';
+import { STATION_GENRES } from './stationGenres.js';
 import { logTime } from './skinNotices.js';
 
 function memoryStorage(initial = {}) {
@@ -260,7 +262,7 @@ test('live directory tags fold into a short list of genres', () => {
   assert.equal(genre('#', 'anthems'), 'Dance & Electronic');
   assert.equal(genre('noaa weather radio'), 'Weather');
   assert.equal(genre('k pop'), 'World');
-  assert.equal(genre('dancehall'), 'Reggae');
+  assert.equal(genre('dancehall'), 'Reggae & Caribbean');
   assert.equal(genre('classic rock'), 'Rock');
   assert.equal(genre('choral'), 'Classical');
   assert.equal(genre('dab', 'capital'), '');
@@ -271,6 +273,45 @@ test('live directory tags fold into a short list of genres', () => {
   assert.equal(named('Rock Antenne', 'pop'), 'Pop');
   assert.equal(named('Radio 1'), '');
   assert.equal(genre(), '');
+});
+
+test('hand-checked station genres use the finder genre names and win over tags', () => {
+  const unknown = Object.entries(STATION_GENRES).filter(
+    ([, genre]) => !GENRE_NAMES.includes(genre),
+  );
+  assert.deepEqual(unknown, []);
+  for (const id of Object.keys(STATION_GENRES))
+    assert.match(
+      id,
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+    );
+  assert.equal(
+    stationGenre({
+      id: '399ca326-0f67-4015-a51b-d7ba2bd4ebbe',
+      name: 'KEXP',
+      tags: ['news'],
+    }),
+    'Rock',
+  );
+});
+
+test('tags seen on untagged live stations now find a genre', () => {
+  const genre = (...tags) => stationGenre({ tags });
+  assert.equal(genre('police scanner'), 'Emergency & Traffic');
+  assert.equal(genre('traffic'), 'Emergency & Traffic');
+  assert.equal(genre('campursari', 'dangdut'), 'World');
+  assert.equal(genre('manele'), 'World');
+  assert.equal(genre('hardcore', 'hardstyle'), 'Dance & Electronic');
+  assert.equal(genre('idm'), 'Dance & Electronic');
+  assert.equal(genre('zouk'), 'Reggae & Caribbean');
+  assert.equal(genre('soca', 'various'), 'Reggae & Caribbean');
+  assert.equal(genre('mpb', 'romantica'), 'Latin');
+  assert.equal(genre('bhakti', 'devotional'), 'Religious');
+  assert.equal(genre('info'), 'News');
+  assert.equal(genre('economics'), 'News');
+  assert.equal(genre('california', 'eclectic'), 'Eclectic');
+  assert.equal(genre('composer', 'contemporary', 'experimental'), 'Classical');
+  assert.equal(genre('main', 'mainstream'), 'Pop');
 });
 
 test('station names decode the HTML entities the directory sends', () => {
