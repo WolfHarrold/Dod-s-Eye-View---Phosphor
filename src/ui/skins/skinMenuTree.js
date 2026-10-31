@@ -258,6 +258,7 @@ export function createMenuTree({
     );
     infoEl.replaceChildren();
     const entry = rows[cursor];
+    infoEl.classList.toggle('idle', !entry);
     const heading = document.createElement('h3');
     if (!entry) {
       heading.textContent = t('Settings');

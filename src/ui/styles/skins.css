@@ -1979,16 +1979,43 @@ html[data-skin='phosphor'] #skin-fx {
     width: auto;
     min-width: 130px;
   }
-  .skin-switch-kicker {
+  .skin-switch-kicker,
+  .skin-switch-label {
     display: none;
   }
   .skin-tree-panel {
     width: 100vw;
     border-right: 0;
   }
-  .skin-info {
+  /* The description card shrinks to a short strip: the name and what it does. */
+  html.skin-active .skin-info {
     min-height: 0;
-    max-height: 30%;
+    max-height: 76px;
+    margin: 4px 6px 6px;
+    padding: 6px 10px;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+  .skin-info.idle,
+  .skin-info .skin-info-key,
+  .skin-info p ~ p {
+    display: none;
+  }
+  html.skin-active .skin-info h3 {
+    margin: 0 0 2px;
+    padding-bottom: 0;
+    border-bottom: 0;
+    font-size: 12px;
+  }
+  html.skin-active {
+    --skin-foot-h: 30px;
+  }
+  html[data-skin='phosphor'].skin-active {
+    --skin-foot-h: 24px;
+  }
+  .skin-cell,
+  html:not([data-skin='phosphor']) .skin-cell {
+    font-size: 9px;
   }
   .skin-foot [data-skin-cell-skin],
   .skin-foot [data-skin-cell-clock] {
