@@ -111,17 +111,43 @@ export function phosphorColour(id) {
   );
 }
 
+/** Picture quality presets; `sharp` is the default. See skinPicture.js. */
+export const PICTURE_QUALITIES = Object.freeze(['fast', 'balanced', 'sharp']);
+export const DEFAULT_PICTURE_QUALITY = 'sharp';
+
+const MAX_FAVOURITES = 40;
+
+function cleanFavourites(list) {
+  if (!Array.isArray(list)) return [];
+  const ids = list.filter((id) => typeof id === 'string' && id.length < 120);
+  return [...new Set(ids)].slice(0, MAX_FAVOURITES);
+}
+
+function cleanPosition(position) {
+  if (!position || typeof position !== 'object') return null;
+  const x = Number(position.x);
+  const y = Number(position.y);
+  return Number.isFinite(x) && Number.isFinite(y) ? { x, y } : null;
+}
+
 /**
  * Read the saved skin preferences. Storage can be missing or throw (private
  * windows, blocked site data); the defaults always apply then.
  * @param {Storage} [storage]
- * @returns {{skin: string, bootAnimation: boolean, welcomeSeen: boolean}}
+ * @returns {{skin: string, bootAnimation: boolean, welcomeSeen: boolean,
+ *   crtOverlay: boolean, pictureQuality: string, favourites: string[],
+ *   favouritesCollapsed: boolean, favouritesPos: ?{x: number, y: number}}}
  */
 export function readSkinPreferences(storage = globalThis.localStorage) {
   const defaults = {
     skin: DEFAULT_SKIN,
     bootAnimation: true,
     welcomeSeen: false,
+    crtOverlay: false,
+    pictureQuality: DEFAULT_PICTURE_QUALITY,
+    favourites: [],
+    favouritesCollapsed: false,
+    favouritesPos: null,
   };
   try {
     const saved = JSON.parse(storage?.getItem(SKIN_STORAGE_KEY) || 'null');
@@ -130,6 +156,13 @@ export function readSkinPreferences(storage = globalThis.localStorage) {
       skin: skinById(saved.skin)?.id || DEFAULT_SKIN,
       bootAnimation: saved.bootAnimation !== false,
       welcomeSeen: saved.welcomeSeen === true,
+      crtOverlay: saved.crtOverlay === true,
+      pictureQuality: PICTURE_QUALITIES.includes(saved.pictureQuality)
+        ? saved.pictureQuality
+        : DEFAULT_PICTURE_QUALITY,
+      favourites: cleanFavourites(saved.favourites),
+      favouritesCollapsed: saved.favouritesCollapsed === true,
+      favouritesPos: cleanPosition(saved.favouritesPos),
     };
   } catch {
     return defaults;
@@ -147,6 +180,13 @@ export function writeSkinPreferences(
         skin: preferences.skin,
         bootAnimation: preferences.bootAnimation !== false,
         welcomeSeen: preferences.welcomeSeen === true,
+        crtOverlay: preferences.crtOverlay === true,
+        pictureQuality: PICTURE_QUALITIES.includes(preferences.pictureQuality)
+          ? preferences.pictureQuality
+          : DEFAULT_PICTURE_QUALITY,
+        favourites: cleanFavourites(preferences.favourites),
+        favouritesCollapsed: preferences.favouritesCollapsed === true,
+        favouritesPos: cleanPosition(preferences.favouritesPos),
       }),
     );
   } catch {

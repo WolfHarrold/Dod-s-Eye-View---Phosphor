@@ -19,6 +19,10 @@ import {
 } from './skinRadio.js';
 import { STATION_GENRES } from './stationGenres.js';
 import { logTime } from './skinNotices.js';
+import { PICTURE_QUALITIES } from './skinCatalog.js';
+import { PICTURE_PRESETS, applyPictureQuality } from './skinPicture.js';
+import { favouriteNodes, toggleFavourite } from './skinFavourites.js';
+import { WINDOW_MIN, clampToBounds } from './skinWindows.js';
 
 function memoryStorage(initial = {}) {
   const data = new Map(Object.entries(initial));
@@ -52,11 +56,17 @@ test('Phosphor colours keep four tiers and map onto the globe filter tint bands'
 });
 
 test('skin preferences fall back to defaults and survive a round trip', () => {
-  assert.deepEqual(readSkinPreferences(memoryStorage()), {
+  const defaults = {
     skin: DEFAULT_SKIN,
     bootAnimation: true,
     welcomeSeen: false,
-  });
+    crtOverlay: false,
+    pictureQuality: 'sharp',
+    favourites: [],
+    favouritesCollapsed: false,
+    favouritesPos: null,
+  };
+  assert.deepEqual(readSkinPreferences(memoryStorage()), defaults);
   const throwing = {
     getItem() {
       throw new Error('blocked');
@@ -72,14 +82,30 @@ test('skin preferences fall back to defaults and survive a round trip', () => {
 
   const storage = memoryStorage();
   writeSkinPreferences(
-    { skin: 'phosphor', bootAnimation: false, welcomeSeen: true },
+    {
+      skin: 'phosphor',
+      bootAnimation: false,
+      welcomeSeen: true,
+      crtOverlay: true,
+      pictureQuality: 'fast',
+      favourites: ['bloom', 'layer:flights', 'bloom', 7],
+      favouritesCollapsed: true,
+      favouritesPos: { x: 40, y: 'nope' },
+    },
     storage,
   );
   assert.deepEqual(readSkinPreferences(storage), {
     skin: 'phosphor',
     bootAnimation: false,
     welcomeSeen: true,
+    crtOverlay: true,
+    pictureQuality: 'fast',
+    favourites: ['bloom', 'layer:flights'],
+    favouritesCollapsed: true,
+    favouritesPos: null,
   });
+  writeSkinPreferences({ skin: 'phosphor', pictureQuality: 'ultra' }, storage);
+  assert.equal(readSkinPreferences(storage).pictureQuality, 'sharp');
   writeSkinPreferences({ skin: 'decopunk' }, storage);
   assert.equal(
     readSkinPreferences(storage).skin,
@@ -193,17 +219,99 @@ test('live layers are grouped, hidden layers stay out, unknown layers keep their
   assert.ok(!nodeMatches(tree[0], 'zzz'));
 });
 
-test('the Phosphor skin warns when another globe filter would clash', () => {
-  const find = (tree) => {
+test('the Phosphor skin leaves the globe filter alone and keeps CRT lines opt-in', () => {
+  const find = (tree, id) => {
     let found;
     walkTree(tree, (node) => {
-      if (node.id === 'filter') found = node;
+      if (node.id === id) found = node;
     });
     return found;
   };
-  assert.equal(find(buildMenuTree(fakeContext())).warn(), null);
-  const phosphor = fakeContext({ skin: () => 'phosphor' });
-  assert.match(find(buildMenuTree(phosphor)).warn(), /Phosphor/);
+  const phosphor = buildMenuTree(fakeContext({ skin: () => 'phosphor' }));
+  assert.equal(find(phosphor, 'filter').warn, undefined);
+  assert.equal(find(phosphor, 'crt-overlay').available(), true);
+  const deco = buildMenuTree(fakeContext());
+  assert.equal(find(deco, 'crt-overlay').available(), false);
+});
+
+test('API keys sit at the bottom of the menu and every classic panel has a window', () => {
+  const tree = buildMenuTree(fakeContext());
+  const last = tree.at(-1);
+  assert.equal(last.id, 'keys');
+  assert.equal(last.pinned, true);
+  const windows = tree.find((node) => node.label === 'Tool Windows');
+  assert.deepEqual(
+    windows.children.map((node) => node.id),
+    ['window:radio-panel', 'window:cctv-panel', 'window:scene-panel'],
+    'only panels that exist are listed',
+  );
+});
+
+test('picture quality offers three presets with Sharp drawing at native pixels', () => {
+  assert.deepEqual(Object.keys(PICTURE_PRESETS), PICTURE_QUALITIES);
+  assert.equal(PICTURE_PRESETS.sharp.nativePixels, true);
+  assert.ok(
+    PICTURE_PRESETS.sharp.tileError < PICTURE_PRESETS.balanced.tileError,
+  );
+  const tileset = {
+    maximumScreenSpaceError: 16,
+    tileLoadProgressEvent: {},
+  };
+  let listener;
+  const viewer = {
+    scene: {
+      postProcessStages: { fxaa: { enabled: true } },
+      globe: { maximumScreenSpaceError: 2 },
+      primitives: {
+        length: 1,
+        get: () => tileset,
+        primitiveAdded: {
+          addEventListener(fn) {
+            listener = fn;
+            return () => (listener = null);
+          },
+        },
+      },
+    },
+  };
+  const stop = applyPictureQuality(viewer, 'sharp');
+  assert.equal(viewer.useBrowserRecommendedResolution, false);
+  assert.equal(viewer.scene.msaaSamples, 4);
+  assert.equal(viewer.scene.postProcessStages.fxaa.enabled, false);
+  assert.equal(tileset.maximumScreenSpaceError, 8);
+  const later = { maximumScreenSpaceError: 16, tileLoadProgressEvent: {} };
+  listener(later);
+  assert.equal(later.maximumScreenSpaceError, 8);
+  stop();
+  assert.equal(listener, null);
+  applyPictureQuality(viewer, 'fast');
+  assert.equal(viewer.useBrowserRecommendedResolution, true);
+  assert.equal(tileset.maximumScreenSpaceError, 24);
+});
+
+test('favourites keep the order they were starred and skip settings that are gone', () => {
+  const tree = buildMenuTree(fakeContext());
+  let ids = [];
+  ids = toggleFavourite(ids, 'bloom');
+  ids = toggleFavourite(ids, 'layer:flights');
+  ids = toggleFavourite(ids, 'gone');
+  assert.deepEqual(
+    favouriteNodes(tree, ids).map((node) => node.id),
+    ['bloom', 'layer:flights'],
+  );
+  assert.deepEqual(toggleFavourite(ids, 'bloom'), ['layer:flights', 'gone']);
+});
+
+test('windows stay reachable inside the area between the bars', () => {
+  const bounds = { left: 0, top: 60, right: 1000, bottom: 800 };
+  assert.deepEqual(
+    clampToBounds({ x: -900, y: 10, width: 400, height: 50 }, bounds),
+    { x: -320, y: 60, width: 400, height: WINDOW_MIN.height },
+  );
+  assert.deepEqual(
+    clampToBounds({ x: 5000, y: 5000, width: 400, height: 300 }, bounds),
+    { x: 920, y: 768, width: 400, height: 300 },
+  );
 });
 
 test('Feeling Lucky walks outward from the nearest unheard station, then wraps', () => {

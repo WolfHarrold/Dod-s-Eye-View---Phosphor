@@ -50,6 +50,8 @@ function valueOf(node) {
  * @param {(node: object, kind: string, value?: unknown) => void} input.onUse
  *   Called for every use: kind is 'toggle', 'select', 'action' or 'search'.
  * @param {(kind: string, text: string) => void} input.log Action Log.
+ * @param {{has: (id: string) => boolean, toggle: (node: object) => void}}
+ *   [input.favourites] Adds a star to every setting row when given.
  */
 export function createMenuTree({
   treeEl,
@@ -58,6 +60,7 @@ export function createMenuTree({
   getNodes,
   onUse,
   log,
+  favourites,
 }) {
   const openFolders = new Set();
   let rows = [];
@@ -148,6 +151,25 @@ export function createMenuTree({
     return button;
   }
 
+  function star(node) {
+    const kept = favourites.has(node.id);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `skin-star${kept ? ' kept' : ''}`;
+    button.textContent = kept ? '★' : '☆';
+    button.setAttribute('aria-pressed', String(kept));
+    const label = kept
+      ? t('Remove {name} from Favourites', { name: t(node.label) })
+      : t('Add {name} to Favourites', { name: t(node.label) });
+    button.setAttribute('aria-label', label);
+    button.title = label;
+    button.addEventListener('click', (event) => {
+      event.stopPropagation();
+      favourites.toggle(node);
+    });
+    return button;
+  }
+
   function build(nodes, depth, query, parent) {
     const list = document.createElement('ul');
     list.setAttribute('role', depth ? 'group' : 'none');
@@ -205,6 +227,7 @@ export function createMenuTree({
           badge.title = warningOf(node) || t(statusOf(node));
           row.appendChild(badge);
         }
+        if (favourites && node.id) row.appendChild(star(node));
         row.appendChild(control(node));
         item.appendChild(row);
       }
@@ -271,7 +294,11 @@ export function createMenuTree({
       );
       addInfo(
         t('KEYS'),
-        t('↑ ↓ move · → open · ← close · Enter use · M hide menu'),
+        favourites
+          ? t(
+              '↑ ↓ move · → open · ← close · Enter use · F favourite · M hide menu',
+            )
+          : t('↑ ↓ move · → open · ← close · Enter use · M hide menu'),
       );
       return;
     }
@@ -336,6 +363,15 @@ export function createMenuTree({
         onUse(entry.node, 'toggle', valueOf(entry.node) !== true);
       else if (entry.node.type === 'action') onUse(entry.node, 'action');
       else entry.row.querySelector('select, input')?.focus();
+    } else if (
+      (event.key === 'f' || event.key === 'F') &&
+      favourites &&
+      entry?.node.id &&
+      !event.ctrlKey &&
+      !event.metaKey &&
+      !event.altKey
+    ) {
+      favourites.toggle(entry.node);
     } else {
       return;
     }

@@ -18,6 +18,10 @@ import {
 } from './skinMenuModel.js';
 import { createMenuTree } from './skinMenuTree.js';
 import { createSkinRadio } from './skinRadio.js';
+import { createWindowManager } from './skinWindows.js';
+import { createFavourites } from './skinFavourites.js';
+import { TOOL_WINDOWS } from './skinMenuModel.js';
+import { applyPictureQuality, PICTURE_PRESETS } from './skinPicture.js';
 import { layerFeedState } from '../../data/feedState.js';
 
 export const GLITCH_INTERVAL_MS = 8000;
@@ -136,9 +140,10 @@ export function initSkinShell({
     preset.tiers.forEach((value, index) =>
       html.style.setProperty(`--ph-t${index + 1}`, value),
     );
+    html.dataset.phColour = colour;
     const select = $('skin-colour');
     if (select) select.value = colour;
-    if (skin === 'phosphor')
+    if (controlState()?.style === 'phosphor')
       sm.applyCinematicPreset?.({
         styleParams: { phosphor: { tint: preset.tint } },
       });
@@ -185,28 +190,26 @@ export function initSkinShell({
     return true;
   }
 
-  const panelClose = new Map();
-  function openPanel(panelId, layerId) {
+  // Tool panels open as floating, skinned windows (src/ui/skins/skinWindows.js).
+  const windowTitles = new Map(
+    TOOL_WINDOWS.map((entry) => [entry.panel, entry.label]),
+  );
+  const windows = createWindowManager({
+    documentRef,
+    host: $('skin-windows'),
+    log: (kind, text) => notices.log(kind, text),
+    leftInset: () =>
+      treePanel?.hidden === false ? treePanel.getBoundingClientRect().right : 0,
+  });
+  function openPanel(panelId, layerId, title) {
     const panel = $(panelId);
     if (!panel) return false;
     if (layerId && !layer(layerId)?.enabled) void setLayer(layerId, true);
+    if (panel.hidden) panel.hidden = false;
     sm.setPanelCollapsed?.(panelId, false, { explicit: true });
-    panel.classList.add('skin-panel-open');
-    if (!panelClose.has(panelId)) {
-      const close = documentRef.createElement('button');
-      close.type = 'button';
-      close.className = 'skin-panel-close';
-      close.textContent = '×';
-      close.setAttribute('aria-label', t('Close panel'));
-      close.addEventListener('click', (event) => {
-        event.stopPropagation();
-        panel.classList.remove('skin-panel-open');
-        notices.log('click', t('Closed a panel'));
-      });
-      panel.appendChild(close);
-      panelClose.set(panelId, close);
-    }
-    return true;
+    return windows.open(panel, {
+      title: t(title || windowTitles.get(panelId) || ''),
+    });
   }
 
   function openContext(buttonId) {
@@ -286,7 +289,9 @@ export function initSkinShell({
         !options.restore &&
         REVEALED_PANELS.has(panelId)
       )
-        $(panelId)?.classList.add('skin-panel-open');
+        windows.open($(panelId), {
+          title: t(windowTitles.get(panelId) || ''),
+        });
       return result;
     };
   }
@@ -344,8 +349,79 @@ export function initSkinShell({
     resetLucky: () => radio.resetLucky(),
     quickStart: () => quickStart(),
     openLog: () => setLog(true),
+    openKeys: () => openKeys(),
+    pictureQuality: () => prefs.pictureQuality,
+    setPictureQuality: (id) => setPictureQuality(id),
+    crtOverlay: () => prefs.crtOverlay,
+    setCrtOverlay: (on) => {
+      prefs.crtOverlay = on === true;
+      html.classList.toggle('skin-crt-lines', prefs.crtOverlay);
+      writeSkinPreferences({ ...prefs, skin }, storage);
+    },
   };
 
+  // ── Picture quality ─────────────────────────────────────────────────
+  let stopPicture = () => {};
+  function setPictureQuality(id, { sharpen = true } = {}) {
+    const preset = PICTURE_PRESETS[id];
+    if (!preset)
+      return fail(msg('Picture Quality'), msg('That setting is not known.'));
+    prefs.pictureQuality = id;
+    writeSkinPreferences({ ...prefs, skin }, storage);
+    stopPicture();
+    stopPicture = applyPictureQuality(sm.viewer, id);
+    if (sharpen)
+      sm.setSharpen?.({
+        enabled: preset.sharpenPct > 0,
+        ...(preset.sharpenPct > 0 ? { intensityPct: preset.sharpenPct } : {}),
+      });
+    return true;
+  }
+
+  // ── API keys: a button in the bottom bar opens the key setup window ──
+  const keysButton = $('skin-keys-btn');
+  function openKeys() {
+    if (dom.click('key-setup-chip')) return true;
+    return fail(
+      msg('API Keys'),
+      msg(
+        'Key setup is only available when this app runs on its own development server.',
+      ),
+    );
+  }
+  on(keysButton, 'click', () => {
+    notices.log('click', t('Opened API Keys'));
+    openKeys();
+  });
+
+  async function useNode(node, kind, value) {
+    const label = t(node.label);
+    try {
+      if (kind === 'toggle') {
+        notices.log(value ? 'on' : 'off', label);
+        await node.set(value);
+      } else if (kind === 'select') {
+        const option = node
+          .options?.()
+          .find((item) => String(item.value) === String(value));
+        notices.log('set', `${label} → ${option ? t(option.label) : value}`);
+        await node.set(value);
+      } else if (kind === 'search') {
+        notices.log('run', `${label}: ${value}`);
+        node.run(value);
+      } else {
+        notices.log('run', label);
+        await node.run();
+      }
+    } catch (error) {
+      fail(label, error?.message || String(error));
+    }
+    renderTree();
+    const warning = node.warn?.();
+    if (warning) notices.notify('warn', t('Warning'), warning);
+  }
+
+  let favourites = null;
   const treePanel = $('skin-tree-panel');
   const menuButton = $('skin-menu-btn');
   const tree = createMenuTree({
@@ -354,32 +430,21 @@ export function initSkinShell({
     findEl: $('skin-find'),
     getNodes: () => nodes,
     log: (kind, text) => notices.log(kind, text),
-    onUse: async (node, kind, value) => {
-      const label = t(node.label);
-      try {
-        if (kind === 'toggle') {
-          notices.log(value ? 'on' : 'off', label);
-          await node.set(value);
-        } else if (kind === 'select') {
-          const option = node
-            .options?.()
-            .find((item) => String(item.value) === String(value));
-          notices.log('set', `${label} → ${option ? t(option.label) : value}`);
-          await node.set(value);
-        } else if (kind === 'search') {
-          notices.log('run', `${label}: ${value}`);
-          node.run(value);
-        } else {
-          notices.log('run', label);
-          await node.run();
-        }
-      } catch (error) {
-        fail(label, error?.message || String(error));
-      }
-      renderTree();
-      const warning = node.warn?.();
-      if (warning) notices.notify('warn', t('Warning'), warning);
+    onUse: useNode,
+    favourites: {
+      has: (id) => favourites?.api.has(id) === true,
+      toggle: (node) => favourites?.api.toggle(node),
     },
+  });
+
+  favourites = createFavourites({
+    root: $('skin-fav'),
+    prefs,
+    save: () => writeSkinPreferences({ ...prefs, skin }, storage),
+    getNodes: () => nodes,
+    onUse: useNode,
+    log: (kind, text) => notices.log(kind, text),
+    onChange: () => renderTree(),
   });
 
   function rebuild() {
@@ -388,6 +453,7 @@ export function initSkinShell({
   }
   function renderTree() {
     if (!treePanel.hidden) tree.render();
+    favourites?.render();
     paintFooter();
   }
   function setMenu(open, { quiet = false } = {}) {
@@ -428,7 +494,7 @@ export function initSkinShell({
         fail(
           name,
           msg(
-            'This layer needs a provider key. Add one in System → Data Keys & Providers.',
+            'This layer needs a provider key. Add one with API KEYS in the bottom bar.',
           ),
         );
       } else if (layerFeedState(entry.stats) === 'unavailable') {
@@ -572,12 +638,11 @@ export function initSkinShell({
   function applySkin(id) {
     skin = id;
     html.dataset.skin = id;
-    if (id === 'phosphor') {
-      applyPhosphorColour(PHOSPHOR_COLOURS[0].id);
-      if (controlState()?.style !== 'phosphor') setFilter('phosphor');
-    } else if (controlState()?.style === 'phosphor') {
-      setFilter('normal');
-    }
+    // The Phosphor skin keeps the map as it is: its one-colour globe filter
+    // and the CRT lines over the map are both opt-in from Look & Filters.
+    if (id === 'phosphor') applyPhosphorColour(PHOSPHOR_COLOURS[0].id);
+    else if (controlState()?.style === 'phosphor') setFilter('normal');
+    html.classList.toggle('skin-crt-lines', prefs.crtOverlay);
     paintSwitch();
     rebuild();
     radio.paint();
@@ -650,7 +715,7 @@ export function initSkinShell({
     setModels3d('proximity');
     sm.setBloom?.({ enabled: true, intensityPct: 50 });
     setHud('minimal');
-    setFilter(skin === 'phosphor' ? 'phosphor' : 'normal');
+    setFilter('normal');
     notices.log(
       'set',
       t(
@@ -717,7 +782,11 @@ export function initSkinShell({
   on(documentRef, 'pointerdown', (event) => {
     if (boot.running) return;
     const target = event.target;
-    if (target?.closest?.('.skin-notice, #skin-welcome, #skin-tree-panel'))
+    if (
+      target?.closest?.(
+        '.skin-notice, #skin-welcome, #skin-tree-panel, #skin-fav, .skin-window',
+      )
+    )
       return;
     for (const [panel, opener, close] of OUTSIDE) {
       if (panel.hidden || panel.contains(target) || opener.contains(target))
@@ -728,6 +797,8 @@ export function initSkinShell({
 
   // ── First paint ─────────────────────────────────────────────────────
   drawStarbursts(documentRef);
+  // A shared link brings its own sharpen setting; the rest still applies.
+  setPictureQuality(prefs.pictureQuality, { sharpen: !sm.hasShareState });
   shell.hidden = false;
   html.classList.add('skin-active');
   applySkin(skin || DEFAULT_SKIN);
@@ -759,11 +830,15 @@ export function initSkinShell({
         sm.setPanelCollapsed = setPanelCollapsed;
       unsubscribeLayers?.();
       radio.destroy();
+      windows.destroy();
+      favourites.destroy();
+      stopPicture();
       tree.destroy();
       boot.destroy();
       notices.destroy();
-      html.classList.remove('skin-active', 'skin-menu-open');
+      html.classList.remove('skin-active', 'skin-menu-open', 'skin-crt-lines');
       delete html.dataset.skin;
+      delete html.dataset.phColour;
       shell.hidden = true;
       delete shell.dataset.initialized;
     },

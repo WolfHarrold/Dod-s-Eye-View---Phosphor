@@ -62,7 +62,9 @@ html.skin-active {
   --skin-glow: none;
   --skin-top-h: 60px;
   --skin-foot-h: 44px;
-  --skin-tree-w: 300px;
+  /* The tree is drawn at 120 % (see .skin-tree-panel > *), so 300 → 360. */
+  --skin-tree-w: 360px;
+  --skin-menu-zoom: 1.2;
 }
 
 html[data-skin='phosphor'] {
@@ -1691,7 +1693,8 @@ html:not([data-skin='phosphor']) .skin-log-btn[aria-expanded='true'] {
   pointer-events: none;
   display: none;
 }
-html[data-skin='phosphor'] #skin-fx {
+/* Over the map only when CRT Lines Over the Map is on (Look & Filters). */
+html[data-skin='phosphor'].skin-crt-lines #skin-fx {
   display: block;
 }
 #skin-fx::before {
@@ -2054,5 +2057,575 @@ html[data-skin='phosphor'] #skin-fx {
   }
   .skin-tree-panel {
     transition: none;
+  }
+}
+
+/* ── Menu at 120 % ──────────────────────────────────────────────────────
+   The menu can be put away, so it can afford to be bigger. Its children
+   are zoomed rather than the panel, so the panel's own place and width stay
+   plain pixels. Favourites rows use the same size. */
+.skin-tree-panel > *,
+.skin-fav-body {
+  zoom: var(--skin-menu-zoom);
+}
+.skin-tree-row.pinned:last-child {
+  margin-top: 10px;
+}
+
+/* ── Stars: add a setting to Favourites ─────────────────────────────── */
+.skin-star {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  margin-left: auto;
+  border: 0;
+  background: none;
+  font: 14px/1 var(--f-body) !important;
+  color: var(--skin-fg2) !important;
+  cursor: pointer;
+  opacity: 0;
+  text-shadow: inherit;
+}
+.skin-tree-row:is(:hover, .cursor) .skin-star,
+.skin-star:focus-visible,
+.skin-star.kept {
+  opacity: 1;
+}
+.skin-star.kept {
+  color: var(--skin-fg) !important;
+}
+html:not([data-skin='phosphor']) .skin-star.kept {
+  color: var(--deco-brass-hi) !important;
+  text-shadow: 0 0 6px #c9a24a88;
+}
+html:not([data-skin='phosphor']) .skin-tree-row.cursor .skin-star {
+  color: var(--deco-ink) !important;
+  text-shadow: none;
+}
+html[data-skin='phosphor'] .skin-tree-row.cursor .skin-star {
+  color: var(--ph-t4) !important;
+  text-shadow: none;
+}
+.skin-star + :is(.skin-toggle, .skin-select, .skin-action, .skin-tree-search) {
+  margin-left: 0 !important;
+}
+
+/* ── Favourites: a floating menu that collapses to a bar ────────────── */
+.skin-fav {
+  position: absolute;
+  left: var(--skin-fav-x, auto);
+  top: var(--skin-fav-y, calc(var(--skin-top-h) + 12px));
+  z-index: 3;
+  width: 330px;
+  max-width: calc(100vw - 24px);
+  display: flex;
+  flex-direction: column;
+  background: var(--skin-panel);
+  border: 1px solid var(--skin-line);
+  border-radius: var(--skin-r);
+  box-shadow: 0 14px 40px #000b;
+}
+html:not([data-skin='phosphor']) .skin-fav {
+  border: 3px double var(--deco-brass);
+  border-radius: 14px;
+  background:
+    repeating-linear-gradient(92deg, #ffffff05 0 2px, transparent 2px 9px),
+    linear-gradient(180deg, #2b1a0f, #160d07);
+}
+.skin-fav-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 6px 0 12px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  font: 700 13px var(--skin-f-ui);
+  letter-spacing: 0.08em;
+}
+.skin-fav-bar:active {
+  cursor: grabbing;
+}
+html:not([data-skin='phosphor']) .skin-fav-bar {
+  padding-top: 3px;
+  font: 700 11px var(--f-label);
+  letter-spacing: 0.2em;
+  color: var(--deco-brass-hi);
+}
+.skin-fav:not(.collapsed) .skin-fav-bar {
+  border-bottom: 1px solid var(--skin-line2);
+}
+.skin-fav-title {
+  flex: 1;
+  min-width: 0;
+}
+.skin-fav-count {
+  min-width: 18px;
+  padding: 1px 5px;
+  border: 1px solid currentColor;
+  border-radius: var(--skin-rp);
+  font: 700 10px var(--f-mono);
+  text-align: center;
+}
+.skin-fav-count:empty {
+  display: none;
+}
+.skin-fav-collapse {
+  width: 26px;
+  height: 24px;
+  padding: 0;
+  background: #000;
+  border: 1px solid var(--skin-line2);
+  border-radius: var(--skin-r);
+  font: 700 14px/1 var(--f-mono) !important;
+  cursor: pointer;
+  text-shadow: inherit;
+}
+html:not([data-skin='phosphor']) .skin-fav-collapse {
+  background: var(--deco-brass-grad);
+  color: var(--deco-ink) !important;
+  border-color: var(--deco-brass-hi);
+  border-radius: 999px;
+}
+.skin-fav.collapsed {
+  width: 220px;
+}
+.skin-fav-tree {
+  max-height: min(52vh, 460px);
+}
+.skin-fav-tree .skin-tree-mark {
+  display: none;
+}
+.skin-fav-empty {
+  margin: 0;
+  padding: 12px 16px 14px;
+  font: 12px/1.45 var(--skin-f-row);
+  text-align: center;
+  color: var(--skin-fg2);
+}
+
+#skin-shell > .skin-windows {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+/* ── Floating tool windows ──────────────────────────────────────────────
+   The app's own panels (radio, cameras, scenes …) lifted out of their old
+   rails: a title bar to drag, × to close, a grip to resize. Positions come
+   from skinWindows.js as custom properties. */
+html.skin-active .skin-window {
+  position: fixed !important;
+  left: var(--skin-win-x) !important;
+  top: var(--skin-win-y) !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: var(--skin-win-w) !important;
+  height: var(--skin-win-h) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+  z-index: var(--skin-win-z, 1) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  background: var(--skin-panel) !important;
+  border: 1px solid var(--skin-line) !important;
+  border-radius: var(--skin-r) !important;
+  box-shadow: 0 18px 50px #000c !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+html.skin-active:not([data-skin='phosphor']) .skin-window {
+  border: 3px double var(--deco-brass) !important;
+  border-radius: 14px !important;
+  background:
+    repeating-linear-gradient(92deg, #ffffff05 0 2px, transparent 2px 9px),
+    linear-gradient(180deg, #2b1a0f, #140c07) !important;
+}
+html.skin-active .skin-window > :not(.skin-window-bar, .skin-window-grip) {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  height: auto !important;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+  overflow: auto !important;
+  opacity: 1 !important;
+  transform: none !important;
+  scrollbar-color: var(--skin-line2) transparent;
+}
+/* Decorations and buttons of the old rails that make no sense in a window. */
+html.skin-active
+  .skin-window
+  :is(
+    .panel-glow,
+    .panel-collapse-btn,
+    .panel-position-controls,
+    .skin-panel-close
+  ) {
+  display: none !important;
+}
+.skin-window-bar {
+  display: none;
+}
+html.skin-active .skin-window > .skin-window-bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 6px 0 14px;
+  border-bottom: 1px solid var(--skin-line2);
+  background: #000;
+  color: var(--skin-fg);
+  font: 700 13px var(--skin-f-ui);
+  letter-spacing: 0.08em;
+  text-shadow: var(--skin-glow);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  visibility: visible !important;
+}
+html.skin-active .skin-window > .skin-window-bar:active {
+  cursor: grabbing;
+}
+html.skin-active:not([data-skin='phosphor']) .skin-window > .skin-window-bar {
+  padding-top: 3px;
+  background: linear-gradient(180deg, #24160d, #140c07);
+  border-bottom: 1px solid var(--deco-brass-lo);
+  color: var(--deco-brass-hi);
+  font: 700 11px var(--f-label);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+html[data-skin='phosphor'] .skin-window > .skin-window-bar {
+  text-transform: uppercase;
+}
+.skin-window-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.skin-window-close {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 26px;
+  padding: 0;
+  background: #000;
+  border: 1px solid var(--skin-line);
+  border-radius: var(--skin-r);
+  color: var(--skin-fg);
+  font: 18px/1 var(--f-mono) !important;
+  cursor: pointer;
+  visibility: visible !important;
+}
+html.skin-active:not([data-skin='phosphor']) .skin-window-close {
+  border-radius: 999px;
+  background: var(--deco-brass-grad);
+  border-color: var(--deco-brass-hi);
+  color: var(--deco-ink);
+}
+.skin-window-close:hover,
+.skin-window-close:focus-visible {
+  background: var(--skin-fg);
+  color: #000;
+}
+html.skin-active:not([data-skin='phosphor'])
+  .skin-window-close:is(:hover, :focus-visible) {
+  background: var(--deco-oxblood);
+  color: var(--deco-ivory);
+}
+.skin-window-grip {
+  display: none;
+}
+html.skin-active .skin-window > .skin-window-grip {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: block;
+  width: 18px;
+  height: 18px;
+  cursor: nwse-resize;
+  touch-action: none;
+  visibility: visible !important;
+  background: linear-gradient(
+    135deg,
+    transparent 0 50%,
+    var(--skin-line) 50% 58%,
+    transparent 58% 70%,
+    var(--skin-line) 70% 78%,
+    transparent 78%
+  );
+}
+
+/* Tool window contents take the skin: fonts, ink, rules and form controls.
+   Colour accents the old panels hard-code are folded into the skin's own
+   colours with a filter, except where the window shows photos or video. */
+html.skin-active
+  .skin-window
+  > :not(.skin-window-bar, .skin-window-grip)
+  :not(svg, svg *, img, video, canvas, .material-symbols-outlined) {
+  font-family: var(--skin-f-row) !important;
+  letter-spacing: 0.02em !important;
+  text-shadow: var(--skin-glow) !important;
+}
+/* Glass blur would also keep its contents out of the skin tint below. */
+html.skin-active .skin-window * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html.skin-active .skin-window > .skin-window-bar {
+  align-self: stretch !important;
+  order: -1 !important;
+}
+/* The filter panel is hidden by id above; as a window it shows. */
+html.skin-active #param-slider-panel.skin-window,
+html.skin-active #param-slider-panel.skin-window * {
+  visibility: visible !important;
+  pointer-events: auto;
+}
+/* The old panels were drawn for a narrow rail with 7–8 px labels. */
+html.skin-active .skin-window > :not(.skin-window-bar, .skin-window-grip) {
+  zoom: var(--skin-menu-zoom);
+}
+html.skin-active
+  .skin-window
+  > :not(.skin-window-bar)
+  :is(button, select, input, textarea) {
+  font-size: 10px !important;
+  border-radius: var(--skin-r) !important;
+  border-color: var(--skin-line2) !important;
+  background-image: none !important;
+  background-color: #000 !important;
+  color: var(--skin-fg) !important;
+  box-shadow: none !important;
+}
+html.skin-active
+  .skin-window
+  > :not(.skin-window-bar)
+  :is(button, select, input, textarea):hover {
+  border-color: var(--skin-line) !important;
+}
+html.skin-active
+  .skin-window
+  :is(button[aria-pressed='true'], button.active, [aria-selected='true']) {
+  background-color: var(--ph-t4) !important;
+  border-color: var(--skin-fg) !important;
+  color: var(--skin-fg) !important;
+}
+html.skin-active:not([data-skin='phosphor'])
+  .skin-window
+  > :not(.skin-window-bar)
+  :is(button, select, input, textarea) {
+  border-radius: 999px !important;
+  border-color: var(--deco-brass-lo) !important;
+  background-color: #1c110a !important;
+  color: var(--deco-ivory) !important;
+}
+html.skin-active
+  .skin-window
+  :is(button[aria-pressed='true'], button.active, [aria-selected='true'])
+  * {
+  color: inherit !important;
+}
+html.skin-active:not([data-skin='phosphor'])
+  .skin-window
+  :is(button[aria-pressed='true'], button.active, [aria-selected='true']) {
+  background-image: linear-gradient(180deg, #4a2c18, #2b1a0f) !important;
+  color: var(--deco-brass-hi) !important;
+  border-color: var(--deco-brass) !important;
+  box-shadow:
+    inset 0 1px 0 #f3dc9555,
+    0 0 8px #c9a24a44 !important;
+}
+html.skin-active .skin-window :is(input[type='range']) {
+  accent-color: var(--skin-fg);
+  background-color: transparent !important;
+}
+html.skin-active:not([data-skin='phosphor']) .skin-window input[type='range'] {
+  accent-color: var(--deco-brass);
+}
+/* Ink: the old panels hard-code cyan and blue accents; text takes the
+   skin's two inks, warnings and errors keep a warning colour. */
+html.skin-active
+  .skin-window
+  > :not(.skin-window-bar, .skin-window-grip)
+  :not(button, button *, select, input, option, svg, svg *) {
+  color: var(--skin-fg2) !important;
+}
+html.skin-active
+  .skin-window
+  > :not(.skin-window-bar, .skin-window-grip)
+  :is(h1, h2, h3, h4, strong, b, .panel-title, .material-symbols-outlined) {
+  color: var(--skin-fg) !important;
+}
+html.skin-active
+  .skin-window
+  :is(
+    [class*='error'],
+    [class*='warn'],
+    [class*='alert'],
+    [role='alert'],
+    [data-tone='error'],
+    [data-tone='warning']
+  ),
+html.skin-active
+  .skin-window
+  :is([class*='error'], [class*='warn'], [class*='alert'], [role='alert'])
+  * {
+  color: var(--skin-alert) !important;
+}
+html.skin-active {
+  --skin-alert: #e0806b;
+}
+html[data-skin='phosphor'] {
+  --skin-alert: var(--ph-alert);
+}
+html.skin-active .skin-window svg {
+  color: var(--skin-fg);
+}
+html.skin-active .skin-window input[type='range'] {
+  accent-color: var(--skin-fg);
+}
+html.skin-active .skin-window input[type='range']::-webkit-slider-thumb {
+  background: var(--skin-fg) !important;
+  border-color: var(--skin-fg) !important;
+  box-shadow: none !important;
+}
+html.skin-active .skin-window input[type='range']::-moz-range-thumb {
+  background: var(--skin-fg) !important;
+  border-color: var(--skin-fg) !important;
+  box-shadow: none !important;
+}
+html.skin-active
+  .skin-window
+  input[type='range']::-webkit-slider-runnable-track {
+  background: color-mix(in srgb, var(--skin-line) 35%, transparent) !important;
+}
+html.skin-active:not([data-skin='phosphor']) .skin-window {
+  --skin-fg: var(--deco-brass-hi);
+  --skin-fg2: var(--deco-ivory-dim);
+}
+
+/* ── API keys: docked above the bottom bar, in the skin ─────────────── */
+html.skin-active #key-setup {
+  top: auto !important;
+  left: auto !important;
+  right: 12px !important;
+  bottom: calc(var(--skin-foot-h) + 8px) !important;
+  transform: none !important;
+  width: min(560px, calc(100vw - 24px)) !important;
+  max-height: calc(
+    100vh - var(--skin-top-h) - var(--skin-foot-h) - 24px
+  ) !important;
+  z-index: 400 !important;
+  background: var(--skin-panel) !important;
+  border: 1px solid var(--skin-line) !important;
+  border-radius: var(--skin-r) !important;
+  box-shadow: 0 18px 50px #000c !important;
+  color: var(--skin-fg) !important;
+}
+html.skin-active:not([data-skin='phosphor']) #key-setup {
+  border: 3px double var(--deco-brass) !important;
+  border-radius: 14px !important;
+  background: linear-gradient(180deg, #2b1a0f, #140c07) !important;
+}
+html.skin-active #key-setup :not(svg, svg *, .material-symbols-outlined) {
+  font-family: var(--skin-f-row) !important;
+}
+html.skin-active #key-setup :is(h2, .key-setup-kicker) {
+  font-family: var(--skin-f-ui) !important;
+}
+html.skin-active:not([data-skin='phosphor']) #key-setup h2 {
+  font-family: var(--f-deco) !important;
+  font-weight: 400 !important;
+  color: var(--deco-brass-hi) !important;
+}
+html.skin-active:not([data-skin='phosphor']) #key-setup {
+  --skin-fg: var(--deco-brass-hi);
+  --skin-fg2: var(--deco-ivory-dim);
+}
+html.skin-active #key-setup :not(button, button *, input, svg, svg *) {
+  color: var(--skin-fg2) !important;
+}
+html.skin-active #key-setup :is(h2, strong, b, .key-setup-kicker) {
+  color: var(--skin-fg) !important;
+}
+html.skin-active #key-setup :is(button, input) {
+  border-radius: var(--skin-r) !important;
+  border-color: var(--skin-line2) !important;
+  background: #000 !important;
+  color: var(--skin-fg) !important;
+  box-shadow: none !important;
+}
+html.skin-active:not([data-skin='phosphor']) #key-setup :is(button, input) {
+  border-radius: 999px !important;
+  border-color: var(--deco-brass-lo) !important;
+  background: #1c110a !important;
+}
+html.skin-active:not([data-skin='phosphor']) #key-setup .key-setup-apply {
+  background: var(--deco-brass-grad) !important;
+  color: var(--deco-ink) !important;
+  border-color: var(--deco-brass-hi) !important;
+}
+html.skin-active #key-setup :is(.key-setup-rows > *, [class*='row']) {
+  border-color: color-mix(
+    in srgb,
+    var(--skin-line) 40%,
+    transparent
+  ) !important;
+  background-color: transparent !important;
+}
+html.skin-active .skin-keys-btn {
+  flex: 0 0 auto;
+  padding: 0 14px;
+  border: 0;
+  font: 700 12px var(--skin-f-ui) !important;
+  cursor: pointer;
+  text-shadow: inherit;
+}
+html.skin-active:not([data-skin='phosphor']) .skin-keys-btn {
+  padding: 3px 16px 0;
+  border: 1px solid var(--deco-brass-lo);
+  font: 700 10px var(--f-label) !important;
+  letter-spacing: 0.18em;
+  color: var(--deco-brass-hi) !important;
+}
+html.skin-active .skin-keys-btn:is(:hover, :focus-visible) {
+  background: var(--skin-fg);
+  color: #000 !important;
+  text-shadow: none;
+}
+html.skin-active:not([data-skin='phosphor'])
+  .skin-keys-btn:is(:hover, :focus-visible) {
+  background: var(--deco-brass-grad);
+  color: var(--deco-ink) !important;
+}
+
+@media (max-width: 760px) {
+  html.skin-active {
+    --skin-menu-zoom: 1;
+  }
+  .skin-fav {
+    width: min(300px, calc(100vw - 24px));
   }
 }
