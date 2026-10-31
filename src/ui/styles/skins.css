@@ -1,0 +1,2055 @@
+/* Skins: the single shell (top bar, left menu tree, footer) and its two looks.
+   Atomic Deco Y2K uses Art Deco colours only (brass, bronze, walnut, ivory;
+   oxblood for failures) with Y2K gloss and Atomic Age shapes. Phosphor is one
+   hue at four brightness tiers on black, square corners, scanlines and glow. */
+
+html.skin-active {
+  --ph-t1: #00ff00;
+  --ph-t2: #00be00;
+  --ph-t3: #007f00;
+  --ph-t4: #003f00;
+  --ph-alert: #c72d04;
+  --deco-walnut-9: #140c07;
+  --deco-walnut-7: #2b1a0f;
+  --deco-walnut-5: #4a2c18;
+  --deco-brass: #c9a24a;
+  --deco-brass-hi: #f3dc95;
+  --deco-brass-lo: #8a6a2a;
+  --deco-bronze: #b5733f;
+  --deco-bronze-hi: #e3a669;
+  --deco-bronze-lo: #6e3f1f;
+  --deco-ivory: #f1e6cc;
+  --deco-ivory-dim: #c4b28d;
+  --deco-oxblood: #9e2b25;
+  --deco-label: #8a5428;
+  --deco-ink: #2a160a;
+  --deco-iridescent:
+    linear-gradient(180deg, #ffffff66 0%, #ffffff10 42%, transparent 50%),
+    linear-gradient(
+      115deg,
+      #7a4522 0%,
+      #c9824a 16%,
+      #f4cf9c 30%,
+      #d98f78 44%,
+      #b8743f 56%,
+      #e9c27a 70%,
+      #a35e3b 84%,
+      #6e3f1f 100%
+    );
+  --deco-brass-grad: linear-gradient(
+    180deg,
+    #f3dc95 0%,
+    #c9a24a 45%,
+    #8a6a2a 100%
+  );
+  --f-deco: 'Limelight', 'Didot', Georgia, serif;
+  --f-label: 'Josefin Sans', 'Futura', 'Century Gothic', sans-serif;
+  --f-body: 'Barlow', 'Helvetica Neue', Arial, sans-serif;
+  --f-tab: 'Roboto Condensed', 'Arial Narrow', sans-serif;
+  --f-list: Roboto, Arial, sans-serif;
+  --f-mono: 'Share Tech Mono', ui-monospace, monospace;
+
+  --skin-fg: var(--deco-ivory);
+  --skin-fg2: var(--deco-ivory-dim);
+  --skin-line: var(--deco-brass);
+  --skin-line2: var(--deco-brass-lo);
+  --skin-fill: var(--deco-walnut-7);
+  --skin-panel: linear-gradient(180deg, #2b1a0f, #1a100a);
+  --skin-r: 8px;
+  --skin-rp: 999px;
+  --skin-f-ui: var(--f-label);
+  --skin-f-row: var(--f-body);
+  --skin-glow: none;
+  --skin-top-h: 60px;
+  --skin-foot-h: 44px;
+  --skin-tree-w: 300px;
+}
+
+html[data-skin='phosphor'] {
+  --skin-fg: var(--ph-t1);
+  --skin-fg2: var(--ph-t2);
+  --skin-line: var(--ph-t1);
+  --skin-line2: var(--ph-t3);
+  --skin-fill: var(--ph-t4);
+  --skin-panel: #000;
+  --skin-r: 0;
+  --skin-rp: 0;
+  --skin-f-ui: var(--f-tab);
+  --skin-f-row: var(--f-list);
+  --skin-glow: 0 0 0.4rem currentColor;
+  --skin-foot-h: 35px;
+}
+
+/* ── The scattered panels give way to the shell ─────────────────────── */
+html.skin-active
+  :is(
+    #title-bar,
+    #style-indicator,
+    #top-center-actions,
+    #command-dock,
+    #left-panel-stack,
+    #right-context-rail,
+    #param-slider-panel,
+    #corner-actions,
+    #toast
+  ) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+/* Descendants too: some panels set their own `visibility` when open. */
+html.skin-active
+  :is(
+    #command-dock,
+    #left-panel-stack,
+    #right-context-rail,
+    #param-slider-panel
+  )
+  * {
+  visibility: hidden !important;
+}
+html.skin-active
+  :is(
+    #command-dock,
+    #left-panel-stack,
+    #right-context-rail,
+    #param-slider-panel
+  )
+  .skin-panel-open
+  * {
+  visibility: visible !important;
+}
+html.skin-active #first-run-launcher {
+  display: none !important;
+}
+/* A panel opened from the menu shows in its usual place, with a close button. */
+html.skin-active .skin-panel-open {
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+html.skin-active #right-context-rail .skin-panel-open {
+  position: relative;
+}
+.skin-panel-close {
+  display: none;
+}
+html.skin-active .skin-panel-open > .skin-panel-close {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 5;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--skin-line);
+  border-radius: var(--skin-rp);
+  background: #000;
+  color: var(--skin-fg);
+  font: 16px/1 var(--f-mono);
+  cursor: pointer;
+}
+html.skin-active
+  #gev-voice-control:is(
+    [data-status='connecting'],
+    [data-status='listening'],
+    [data-status='executing']
+  ),
+html.skin-active
+  #gev-voice-control:is(
+    [data-status='connecting'],
+    [data-status='listening'],
+    [data-status='executing']
+  )
+  * {
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+html.skin-active body.ui-clean-view #clean-view-exit {
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+html.skin-active #intel-hud {
+  top: var(--skin-top-h);
+  bottom: var(--skin-foot-h);
+}
+/* The corner readouts take the skin's colours: brass and ivory, or the phosphor hue. */
+html.skin-active:not([data-skin='phosphor']) #intel-hud {
+  --hud-skin-ink: var(--deco-brass-hi);
+}
+html[data-skin='phosphor'] #intel-hud {
+  --hud-skin-ink: var(--ph-t1);
+}
+html.skin-active #intel-hud,
+html.skin-active #intel-hud * {
+  color: var(--hud-skin-ink) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--hud-skin-ink) 60%,
+    transparent
+  ) !important;
+}
+html[data-skin='phosphor'] #intel-hud * {
+  font-family: var(--f-mono) !important;
+  text-shadow: 0 0 0.4rem currentColor !important;
+}
+html.skin-active.skin-menu-open #intel-hud .hud-top-left,
+html.skin-active.skin-menu-open #intel-hud .hud-bottom-left {
+  margin-left: var(--skin-tree-w);
+}
+html.skin-active
+  body:is(.cockpit-mode, .ui-clean-view, .recording-mode, .scene-playback-mode)
+  #skin-shell {
+  display: none !important;
+}
+
+/* ── Shell frame ────────────────────────────────────────────────────── */
+#skin-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  pointer-events: none;
+  color: var(--skin-fg);
+  font-family: var(--skin-f-ui);
+  text-shadow: var(--skin-glow);
+  transform-origin: 50% 50%;
+}
+#skin-shell[hidden] {
+  display: none !important;
+}
+#skin-shell > * {
+  pointer-events: auto;
+}
+#skin-shell [hidden] {
+  display: none !important;
+}
+#skin-shell button,
+#skin-shell select,
+#skin-shell input {
+  font: inherit;
+  color: inherit;
+}
+#skin-shell :is(button, select, input):focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 1px #000,
+    0 0 0 2px var(--skin-fg);
+}
+html:not([data-skin='phosphor']) [data-only-skin='phosphor'] {
+  display: none !important;
+}
+.skin-sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+body.skin-crt-off > :not(#skin-boot, script, #cesiumContainer) {
+  animation: skin-crt-off 0.7s cubic-bezier(0.7, 0, 0.9, 0.6) forwards;
+}
+html[data-skin='phosphor'] #skin-shell.skin-arrive {
+  animation: skin-phosphor-in 0.5s steps(5) both;
+}
+@keyframes skin-crt-off {
+  0% {
+    transform: none;
+    filter: brightness(1);
+  }
+  45% {
+    transform: scale(1, 0.006);
+    filter: brightness(5);
+  }
+  75% {
+    transform: scale(0.01, 0.006);
+    filter: brightness(6);
+  }
+  100% {
+    transform: scale(0, 0);
+    opacity: 0;
+  }
+}
+@keyframes skin-phosphor-in {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(2px);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-8px);
+  }
+  60% {
+    transform: translateY(4px);
+    filter: none;
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* ── Top bar ────────────────────────────────────────────────────────── */
+.skin-top {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--skin-top-h);
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 0 14px;
+  background: #000;
+  border-bottom: 1px solid var(--skin-line);
+}
+html:not([data-skin='phosphor']) .skin-top {
+  background: linear-gradient(180deg, #24160d, #140c07);
+  border-bottom: 3px double var(--deco-brass);
+}
+.skin-top-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.skin-menu-btn {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  background: #000;
+  border: 1px solid var(--skin-line);
+  border-radius: var(--skin-r);
+  font: 700 14px var(--skin-f-ui) !important;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  text-shadow: inherit;
+}
+.skin-menu-btn[aria-expanded='true'] {
+  background: var(--skin-fg);
+  color: var(--ph-t4) !important;
+  text-shadow: none;
+}
+html:not([data-skin='phosphor']) .skin-menu-btn {
+  background: var(--deco-brass-grad);
+  color: var(--deco-ink) !important;
+  border-color: var(--deco-brass-hi);
+  letter-spacing: 0.14em;
+  padding: 3px 14px 0;
+  box-shadow:
+    inset 0 1px 0 #fff6,
+    0 2px 6px #0008;
+}
+html:not([data-skin='phosphor']) .skin-menu-btn[aria-expanded='true'] {
+  background: var(--deco-iridescent);
+}
+.skin-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.skin-brand-name {
+  font-size: 15px;
+  letter-spacing: 0.08em;
+}
+html:not([data-skin='phosphor']) .skin-brand-name {
+  font-family: var(--f-deco);
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  color: var(--deco-brass-hi);
+  text-shadow:
+    0 1px 0 #000,
+    0 0 12px #c9a24a55;
+}
+.skin-burst {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+}
+.skin-burst line {
+  stroke: var(--deco-brass);
+  stroke-width: 1.4;
+}
+.skin-burst circle {
+  fill: var(--deco-oxblood);
+}
+html[data-skin='phosphor'] .skin-brand .skin-burst {
+  display: none;
+}
+.skin-top-right {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.skin-select {
+  appearance: none;
+  height: 36px;
+  background: #000;
+  border: 1px solid var(--skin-line);
+  border-radius: var(--skin-r);
+  font: 14px var(--f-mono) !important;
+  padding: 0 26px 0 10px;
+  cursor: pointer;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--skin-line) 50%),
+    linear-gradient(-45deg, transparent 50%, var(--skin-line) 50%);
+  background-size: 5px 5px;
+  background-position:
+    calc(100% - 13px) 50%,
+    calc(100% - 8px) 50%;
+  background-repeat: no-repeat;
+}
+html:not([data-skin='phosphor']) .skin-select {
+  background-color: var(--deco-walnut-7);
+  font: 600 12px var(--f-body) !important;
+}
+.skin-select option {
+  background: #000;
+  color: var(--skin-fg);
+}
+html:not([data-skin='phosphor']) .skin-select option {
+  background: var(--deco-walnut-7);
+}
+.skin-input {
+  min-width: 0;
+  background: #000;
+  border: 1px solid var(--skin-line2);
+  border-radius: var(--skin-r);
+  font: 13px var(--f-mono) !important;
+  padding: 5px 7px;
+}
+html:not([data-skin='phosphor']) .skin-input {
+  background: var(--deco-walnut-9);
+  font: 500 13px var(--f-body) !important;
+  border-radius: 999px;
+  padding: 6px 12px;
+}
+.skin-input::placeholder {
+  color: var(--skin-fg2);
+  opacity: 0.7;
+}
+
+/* ── Radio capsule ──────────────────────────────────────────────────── */
+.skin-radio {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  height: 40px;
+  box-sizing: border-box;
+  padding: 3px;
+  border: 1px solid var(--skin-line);
+  border-radius: var(--skin-rp);
+  background: #000;
+}
+html:not([data-skin='phosphor']) .skin-radio {
+  background: linear-gradient(180deg, #24160d, #140c07);
+  border-color: var(--deco-brass-lo);
+  box-shadow: inset 0 1px 0 #ffffff12;
+}
+.skin-radio-btn {
+  height: 32px;
+  min-width: 30px;
+  padding: 0 6px;
+  background: none;
+  border: 0;
+  border-radius: var(--skin-r);
+  font: 12px var(--f-mono) !important;
+  cursor: pointer;
+  text-shadow: inherit;
+}
+html:not([data-skin='phosphor']) .skin-radio-btn {
+  border-radius: 999px;
+  color: var(--deco-brass-hi) !important;
+}
+.skin-radio-btn:hover {
+  background: color-mix(in srgb, var(--skin-fg) 14%, transparent);
+}
+.skin-radio-btn.play[aria-pressed='true'] {
+  background: var(--skin-fg);
+  color: #000 !important;
+  text-shadow: none;
+}
+html:not([data-skin='phosphor']) .skin-radio-btn.play[aria-pressed='true'] {
+  background: var(--deco-iridescent);
+  color: var(--deco-ink) !important;
+}
+.skin-radio-btn.lucky {
+  font: 700 10px var(--skin-f-ui) !important;
+  letter-spacing: 0.08em;
+  padding: 0 10px;
+  border: 1px solid var(--skin-line2);
+}
+html:not([data-skin='phosphor']) .skin-radio-btn.lucky {
+  background: var(--deco-brass-grad);
+  color: var(--deco-ink) !important;
+  border-color: var(--deco-brass-hi);
+  padding-top: 3px;
+}
+.skin-radio-display {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  height: 32px;
+  width: 210px;
+  min-width: 0;
+  padding: 0 12px;
+  margin: 0 4px;
+  background: #000;
+  border: 1px solid var(--skin-line2);
+  border-radius: var(--skin-r);
+  cursor: pointer;
+  text-align: left;
+  text-shadow: inherit;
+}
+html:not([data-skin='phosphor']) .skin-radio-display {
+  background: linear-gradient(180deg, #efe4c8, #d9c9a3);
+  color: var(--deco-ink) !important;
+  border-color: var(--deco-brass);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 3px #0005;
+}
+.skin-radio-display b {
+  max-width: 100%;
+  font: 700 12px var(--skin-f-ui);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.skin-radio-display small {
+  max-width: 100%;
+  font: 10px var(--f-mono);
+  color: var(--skin-fg2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html:not([data-skin='phosphor']) .skin-radio-display small {
+  color: #6b4a2a;
+  font: 600 10px var(--f-body);
+}
+.skin-radio-panel {
+  position: absolute;
+  top: 46px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(360px, 90vw);
+  max-height: 420px;
+  display: flex;
+  flex-direction: column;
+  background: var(--skin-panel);
+  border: 1px solid var(--skin-line);
+  border-radius: var(--skin-r);
+  z-index: 3;
+}
+html:not([data-skin='phosphor']) .skin-radio-panel {
+  border-radius: 14px;
+  box-shadow: 0 14px 40px #000c;
+}
+.skin-radio-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--skin-line2);
+}
+.skin-radio-tabs button {
+  flex: 1;
+  padding: 8px 0;
+  background: none;
+  border: 0;
+  font: 700 12px var(--skin-f-ui) !important;
+  letter-spacing: 0.06em;
+  color: var(--skin-fg2) !important;
+  cursor: pointer;
+  text-shadow: inherit;
+}
+.skin-radio-tabs button[aria-selected='true'] {
+  color: var(--skin-fg) !important;
+  box-shadow: inset 0 -2px 0 var(--skin-fg);
+}
+html:not([data-skin='phosphor']) .skin-radio-tabs button[aria-selected='true'] {
+  color: var(--deco-brass-hi) !important;
+  box-shadow: inset 0 -3px 0 var(--deco-bronze);
+}
+.skin-radio-search {
+  margin: 8px;
+}
+.skin-radio-list {
+  overflow: auto;
+  padding: 0 0 8px;
+  font: 13px var(--skin-f-row);
+}
+.skin-radio-list h4 {
+  margin: 8px 10px 2px;
+  font: 700 10px var(--f-mono);
+  letter-spacing: 0.24em;
+  color: var(--skin-fg2);
+  text-align: center;
+}
+.skin-radio-list button {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 10px;
+  width: 100%;
+  padding: 5px 10px;
+  background: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  text-shadow: inherit;
+}
+.skin-radio-list button:hover,
+.skin-radio-list button.now {
+  background: var(--skin-fg);
+  color: #000 !important;
+  text-shadow: none;
+}
+html:not([data-skin='phosphor']) .skin-radio-list button:hover,
+html:not([data-skin='phosphor']) .skin-radio-list button.now {
+  background: var(--deco-brass-grad);
+  color: var(--deco-ink) !important;
+}
+.skin-radio-list button small {
+  grid-column: 1;
+  font-size: 11px;
+  opacity: 0.75;
+}
+.skin-radio-list button em {
+  grid-row: 1 / 3;
+  grid-column: 2;
+  align-self: center;
+  font: 11px var(--f-mono);
+  font-style: normal;
+}
+
+/* ── Change Skin button and its glitch ──────────────────────────────── */
+.skin-switch {
+  position: relative;
+  width: 240px;
+  height: 36px;
+}
+.skin-switch-face {
+  position: absolute;
+  inset: 0;
+}
+.skin-switch-face.alt {
+  opacity: 0;
+  pointer-events: none;
+}
+.skin-switch-deco {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid var(--deco-brass);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #1a100a, #2b1a0f);
+  color: var(--deco-ivory) !important;
+  cursor: pointer;
+  text-shadow: none;
+  box-shadow: inset 0 2px 4px #000a;
+}
+.skin-switch-kicker {
+  padding-top: 3px;
+  font: 700 9px var(--f-label);
+  letter-spacing: 0.18em;
+  color: var(--deco-brass-hi);
+}
+.skin-switch-deco b {
+  flex: 1;
+  font: 600 12px var(--f-body);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.skin-switch-chevron {
+  color: var(--deco-brass-hi);
+}
+.skin-switch-phosphor {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  height: 36px;
+  border: 1px solid var(--ph-t1);
+  background: #000;
+  color: var(--ph-t1) !important;
+  font: 13px var(--f-mono) !important;
+  cursor: pointer;
+  text-shadow: 0 0 0.4rem currentColor;
+  white-space: nowrap;
+}
+.skin-switch.glitch .main {
+  animation: skin-glitch-out 1.4s steps(1) both;
+}
+.skin-switch.glitch .alt {
+  animation: skin-glitch-in 1.4s steps(1) both;
+}
+@keyframes skin-glitch-out {
+  0% {
+    opacity: 1;
+  }
+  6% {
+    opacity: 1;
+    transform: translateX(4px) skewX(-8deg);
+    filter: hue-rotate(80deg) saturate(3);
+  }
+  10% {
+    opacity: 0.3;
+    transform: none;
+  }
+  16% {
+    opacity: 1;
+    clip-path: inset(40% 0 0 0);
+  }
+  22%,
+  74% {
+    opacity: 0;
+    clip-path: none;
+  }
+  78% {
+    opacity: 1;
+    transform: translateX(-3px);
+  }
+  84% {
+    opacity: 0;
+  }
+  90% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes skin-glitch-in {
+  0% {
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+    clip-path: inset(0 0 55% 0);
+    transform: translateX(-5px);
+  }
+  12% {
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+    clip-path: inset(35% 0 0 0);
+    transform: translateX(3px);
+  }
+  22% {
+    opacity: 1;
+    clip-path: none;
+    transform: none;
+  }
+  74% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 0;
+  }
+  84% {
+    opacity: 1;
+    transform: translateX(2px);
+  }
+  90%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ── Skin picker ────────────────────────────────────────────────────── */
+.skin-picker {
+  position: absolute;
+  right: 12px;
+  top: calc(var(--skin-top-h) + 6px);
+  width: min(600px, calc(100vw - 24px));
+  max-height: calc(100vh - var(--skin-top-h) - var(--skin-foot-h) - 24px);
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 12px;
+  background: var(--skin-panel);
+  border: 1px solid var(--skin-line);
+  border-radius: var(--skin-r);
+  z-index: 4;
+}
+html:not([data-skin='phosphor']) .skin-picker {
+  border-radius: 16px;
+  box-shadow: 0 18px 50px #000d;
+}
+.skin-picker header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 10px;
+  text-align: center;
+  font: 700 14px var(--skin-f-ui);
+  letter-spacing: 0.06em;
+}
+html:not([data-skin='phosphor']) .skin-picker header span {
+  font: 400 20px var(--f-deco);
+  color: var(--deco-brass-hi);
+}
+.skin-picker header small {
+  font: 12px var(--skin-f-row);
+  color: var(--skin-fg2);
+  letter-spacing: 0;
+}
+.skin-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+}
+.skin-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: 6px;
+  background: #000;
+  border: 1px solid var(--skin-line2);
+  border-radius: var(--skin-r);
+  cursor: pointer;
+  text-shadow: inherit;
+}
+html:not([data-skin='phosphor']) .skin-card {
+  background: #120a05;
+  border-radius: 12px;
+}
+.skin-card.now {
+  border-color: var(--skin-fg);
+  box-shadow: 0 0 0 1px var(--skin-fg);
+}
+html:not([data-skin='phosphor']) .skin-card.now {
+  border-color: var(--deco-brass-hi);
+  box-shadow:
+    0 0 0 1px var(--deco-brass-hi),
+    0 0 14px #c9a24a44;
+}
+.skin-card:not(:disabled):hover {
+  border-color: var(--skin-fg);
+}
+.skin-card:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.skin-card-thumb {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: calc(var(--skin-r) - 2px);
+  background: #111;
+}
+.skin-card:disabled .skin-card-thumb {
+  aspect-ratio: 16 / 3;
+}
+.skin-card-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.skin-card-text {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  text-align: center;
+}
+.skin-card-text b {
+  font: 700 12px var(--skin-f-ui);
+  letter-spacing: 0.04em;
+}
+.skin-card-text em {
+  font: 9px var(--f-mono);
+  font-style: normal;
+  letter-spacing: 0.16em;
+  color: var(--skin-fg2);
+}
+.skin-card-text small {
+  font: 11px/1.35 var(--skin-f-row);
+  color: var(--skin-fg2);
+}
+
+/* ── Left menu tree ─────────────────────────────────────────────────── */
+.skin-tree-panel {
+  position: absolute;
+  left: 0;
+  top: var(--skin-top-h);
+  bottom: calc(var(--skin-foot-h) + 6px);
+  width: min(var(--skin-tree-w), 88vw);
+  display: flex;
+  flex-direction: column;
+  background: var(--skin-panel);
+  border-right: 1px solid var(--skin-line);
+  transform-origin: 14px 0;
+  transition:
+    transform 0.16s linear,
+    opacity 0.16s linear;
+}
+html:not([data-skin='phosphor']) .skin-tree-panel {
+  border-right: 3px double var(--deco-brass);
+  background:
+    repeating-linear-gradient(92deg, #ffffff05 0 2px, transparent 2px 9px),
+    linear-gradient(180deg, #2b1a0f, #160d07);
+}
+#skin-shell .skin-tree-panel[hidden] {
+  display: flex !important;
+  transform: scaleY(0) scaleX(0.2);
+  opacity: 0;
+  pointer-events: none;
+}
+.skin-tree-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--skin-line2);
+}
+.skin-tree-head .skin-input {
+  flex: 1 1 90px;
+}
+.skin-small-btn {
+  flex: 0 0 auto;
+  padding: 5px 6px;
+  background: #000;
+  border: 1px solid var(--skin-line2);
+  border-radius: var(--skin-r);
+  font: 700 11px var(--skin-f-ui) !important;
+  white-space: nowrap;
+  cursor: pointer;
+  text-shadow: inherit;
+}
+html:not([data-skin='phosphor']) .skin-small-btn {
+  padding: 6px 8px 3px;
+  background: linear-gradient(180deg, #3a2414, #1c110a);
+  color: var(--deco-brass-hi) !important;
+  border-color: var(--deco-brass-lo);
+  border-radius: 999px;
+  font-size: 9px !important;
+  letter-spacing: 0.08em;
+}
+.skin-tree {
+  flex: 1;
+  overflow: auto;
+  padding: 6px 0 10px;
+  font-family: var(--skin-f-row);
+  font-size: 12px;
+  scrollbar-color: var(--skin-line2) transparent;
+  outline: none;
+}
+.skin-tree ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.skin-tree ul ul {
+  margin-left: 12px;
+  border-left: 1px dotted var(--skin-line2);
+}
+.skin-tree-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+  padding: 0 8px 0 6px;
+}
+.skin-tree ul ul .skin-tree-row {
+  padding-left: 12px;
+}
+.skin-tree ul ul .skin-tree-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 8px;
+  border-top: 1px dotted var(--skin-line2);
+}
+.skin-tree-row.folder {
+  cursor: pointer;
+}
+.skin-tree-row.cursor {
+  background: var(--skin-fg);
+  color: var(--ph-t4);
+  text-shadow: none;
+}
+html:not([data-skin='phosphor']) .skin-tree-row.cursor {
+  background: var(--deco-brass-grad);
+  color: var(--deco-ink);
+  border-radius: 6px;
+}
+.skin-tree-row.unavailable .skin-tree-label {
+  opacity: 0.55;
+}
+.skin-tree-box {
+  position: relative;
+  box-sizing: border-box;
+  flex: 0 0 11px;
+  width: 11px;
+  height: 11px;
+  border: 1px solid currentColor;
+}
+.skin-tree-box::before,
+.skin-tree-box::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+.skin-tree-box::before {
+  width: 5px;
+  height: 1px;
+}
+.skin-tree-box::after {
+  width: 1px;
+  height: 5px;
+}
+.skin-tree-box.open::after {
+  display: none;
+}
+html:not([data-skin='phosphor']) .skin-tree .skin-tree-box {
+  border-radius: 3px;
+  border-color: var(--deco-brass);
+  color: var(--deco-brass-hi);
+  background: #0006;
+}
+html:not([data-skin='phosphor']) .skin-tree-row.cursor .skin-tree-box {
+  color: var(--deco-ink);
+  border-color: var(--deco-ink);
+}
+.skin-tree-mark {
+  flex: 0 0 11px;
+  height: 11px;
+  display: grid;
+  place-items: center;
+}
+.skin-tree-mark::after {
+  content: '';
+  width: 4px;
+  height: 4px;
+  background: currentColor;
+  opacity: 0;
+}
+html:not([data-skin='phosphor']) .skin-tree-mark::after {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--deco-brass-hi);
+  box-shadow: 0 0 6px var(--deco-brass-hi);
+}
+.skin-tree-row.on .skin-tree-mark::after {
+  opacity: 1;
+}
+.skin-tree-folder {
+  flex: 1;
+  min-width: 0;
+  padding-top: 0;
+  font-family: var(--skin-f-ui);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html:not([data-skin='phosphor']) .skin-tree-folder {
+  padding-top: 3px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--deco-brass-hi);
+}
+html:not([data-skin='phosphor']) .skin-tree-row.cursor .skin-tree-folder {
+  color: var(--deco-ink);
+}
+.skin-tree-folder small {
+  margin-left: 6px;
+  font-family: var(--skin-f-row);
+  font-size: 10px;
+  letter-spacing: 0;
+  opacity: 0.75;
+  text-transform: none;
+}
+.skin-tree-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.skin-warn-badge {
+  padding: 0 3px;
+  border: 1px solid currentColor;
+  font: 11px var(--f-mono);
+  animation: skin-blink 1s steps(1) infinite;
+}
+html:not([data-skin='phosphor']) .skin-warn-badge {
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--deco-oxblood);
+  border-color: var(--deco-oxblood);
+  color: var(--deco-ivory);
+  font: 700 10px var(--f-body);
+  animation: none;
+}
+@keyframes skin-blink {
+  50% {
+    color: var(--ph-alert);
+    border-color: var(--ph-alert);
+  }
+}
+.skin-tree-row
+  > :is(.skin-toggle, .skin-select, .skin-action, .skin-tree-search) {
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+.skin-toggle {
+  display: flex;
+  padding: 0;
+  background: #000;
+  border: 1px solid var(--skin-line2);
+  font: 700 10px var(--skin-f-ui) !important;
+  cursor: pointer;
+}
+.skin-toggle span {
+  padding: 3px 6px;
+  color: var(--ph-t3);
+}
+.skin-toggle[aria-pressed='true'] .on,
+.skin-toggle[aria-pressed='false'] .off {
+  background: var(--ph-t1);
+  color: var(--ph-t4);
+}
+html:not([data-skin='phosphor']) .skin-toggle {
+  position: relative;
+  width: 38px;
+  height: 20px;
+  border-radius: 999px;
+  border-color: var(--deco-brass-lo);
+  background: linear-gradient(180deg, #120a05, #2b1a0f);
+  box-shadow: inset 0 2px 3px #000c;
+}
+html:not([data-skin='phosphor']) .skin-toggle span {
+  display: none;
+}
+html:not([data-skin='phosphor']) .skin-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fffaf0, #efe4c8 45%, #a38c62);
+  box-shadow: 0 1px 2px #000a;
+  transition: left 0.14s;
+}
+html:not([data-skin='phosphor']) .skin-toggle[aria-pressed='true'] {
+  background: linear-gradient(180deg, #f3dc95, #c9a24a 55%, #8a6a2a);
+  border-color: var(--deco-brass-hi);
+  box-shadow:
+    inset 0 1px 0 #fff8,
+    inset 0 -2px 3px #0004,
+    0 0 8px #c9a24a55;
+}
+html:not([data-skin='phosphor']) .skin-toggle[aria-pressed='true']::after {
+  left: 20px;
+}
+.skin-toggle:disabled,
+.skin-action:disabled,
+.skin-select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.skin-tree :is(.skin-select, .skin-input) {
+  color: var(--skin-fg) !important;
+  text-shadow: var(--skin-glow);
+}
+.skin-tree .skin-select {
+  width: 108px;
+  height: auto;
+  padding: 3px 20px 3px 6px;
+  font-size: 11px !important;
+  background-position:
+    calc(100% - 11px) 50%,
+    calc(100% - 6px) 50%;
+}
+.skin-tree .skin-tree-search .skin-input {
+  width: 100px;
+  box-sizing: border-box;
+  padding: 3px 8px;
+  font-size: 11px !important;
+}
+.skin-action {
+  width: 100px;
+  padding: 3px 8px;
+  background: #000;
+  border: 1px solid var(--skin-line2);
+  border-radius: var(--skin-r);
+  font: 700 10px var(--skin-f-ui) !important;
+  letter-spacing: 0.04em;
+  text-align: center;
+  cursor: pointer;
+}
+html:not([data-skin='phosphor']) .skin-action {
+  padding: 5px 0 2px;
+  background: var(--deco-brass-grad);
+  color: var(--deco-ink) !important;
+  border-color: var(--deco-brass-hi);
+  border-radius: 999px;
+  letter-spacing: 0.12em;
+}
+.skin-tree-row.pinned {
+  min-height: 34px;
+  margin: 2px 6px 6px;
+  border: 1px solid var(--skin-line);
+  border-radius: var(--skin-r);
+}
+html:not([data-skin='phosphor']) .skin-tree-row.pinned {
+  border-radius: 999px;
+  border-color: var(--deco-brass);
+}
+.skin-tree-row.pinned .skin-tree-label {
+  font: 700 13px var(--skin-f-ui);
+  letter-spacing: 0.06em;
+}
+.skin-tree-row.pinned .skin-action {
+  background: var(--skin-fg);
+  color: #000 !important;
+}
+html:not([data-skin='phosphor']) .skin-tree-row.pinned .skin-action {
+  background: var(--deco-iridescent);
+  border-color: var(--deco-bronze-hi);
+  box-shadow: inset 0 1px 0 #fff8;
+}
+
+/* Description card: Atomic Age ivory formica in Deco, a framed box in Phosphor. */
+.skin-info {
+  flex: 0 0 auto;
+  min-height: 148px;
+  max-height: 42%;
+  overflow: auto;
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--skin-line);
+  font-family: var(--skin-f-row);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: center;
+}
+html:not([data-skin='phosphor']) .skin-info {
+  margin: 8px 10px 10px;
+  padding: 14px 18px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #f3e9d0, #e3d3ad);
+  color: var(--deco-ink);
+  text-shadow: none;
+  box-shadow:
+    inset 0 0 0 1px var(--deco-brass),
+    inset 0 0 0 4px #f3e9d0,
+    inset 0 0 0 5px var(--deco-brass-lo);
+}
+.skin-info h3 {
+  margin: 0 0 6px;
+  font: 700 14px var(--skin-f-ui);
+  letter-spacing: 0.05em;
+}
+html[data-skin='phosphor'] .skin-info h3 {
+  text-transform: uppercase;
+}
+html:not([data-skin='phosphor']) .skin-info h3 {
+  display: inline-block;
+  padding-bottom: 3px;
+  border-bottom: 2px solid var(--deco-bronze);
+  font: 400 17px var(--f-deco);
+  letter-spacing: 0.04em;
+}
+.skin-info-key {
+  display: block;
+  margin-top: 6px;
+  font: 10px var(--f-mono);
+  letter-spacing: 0.2em;
+  color: var(--skin-fg2);
+}
+html:not([data-skin='phosphor']) .skin-info-key {
+  font: 700 9px var(--f-label);
+  color: var(--deco-label);
+  letter-spacing: 0.22em;
+}
+.skin-info p {
+  margin: 2px 0 0;
+}
+.skin-info-warning {
+  margin-top: 8px;
+  padding: 6px 8px;
+  border: 1px solid currentColor;
+  border-radius: var(--skin-r);
+}
+.skin-info-warning b {
+  animation: skin-blink 1s steps(1) infinite;
+}
+html:not([data-skin='phosphor']) .skin-info-warning {
+  background: var(--deco-oxblood);
+  color: var(--deco-ivory);
+  border: 0;
+}
+html:not([data-skin='phosphor']) .skin-info-warning b {
+  animation: none;
+}
+
+/* ── Welcome card ───────────────────────────────────────────────────── */
+.skin-welcome {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(380px, calc(100vw - 32px));
+  box-sizing: border-box;
+  padding: 20px 22px;
+  background: #000;
+  border: 1px solid var(--skin-line);
+  border-radius: var(--skin-r);
+  text-align: center;
+}
+html.skin-menu-open .skin-welcome {
+  left: calc(50% + var(--skin-tree-w) / 2);
+}
+@media (max-width: 760px) {
+  html.skin-menu-open .skin-welcome {
+    left: 50%;
+  }
+}
+html:not([data-skin='phosphor']) .skin-welcome {
+  background: linear-gradient(180deg, #f3e9d0, #e3d3ad);
+  color: var(--deco-ink);
+  border: 0;
+  border-radius: 16px;
+  text-shadow: none;
+  box-shadow:
+    inset 0 0 0 1px var(--deco-brass),
+    inset 0 0 0 5px #f3e9d0,
+    inset 0 0 0 6px var(--deco-brass-lo),
+    0 18px 50px #000c;
+}
+.skin-welcome h2 {
+  margin: 0 0 6px;
+  font: 700 18px var(--skin-f-ui);
+  letter-spacing: 0.06em;
+}
+html:not([data-skin='phosphor']) .skin-welcome h2 {
+  font: 400 24px var(--f-deco);
+  letter-spacing: 0.03em;
+}
+.skin-welcome p {
+  margin: 0 0 6px;
+  font: 13px/1.45 var(--skin-f-row);
+}
+.skin-welcome ul {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  font: 12px/1.6 var(--skin-f-row);
+}
+.skin-welcome-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.skin-quick {
+  padding: 9px 16px;
+  border: 1px solid var(--skin-line);
+  border-radius: var(--skin-rp);
+  background: var(--skin-fg);
+  color: #000 !important;
+  font: 700 13px var(--skin-f-ui) !important;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  text-shadow: none;
+}
+html:not([data-skin='phosphor']) .skin-quick {
+  padding: 11px 16px 7px;
+  background: var(--deco-iridescent);
+  background-size:
+    100% 100%,
+    260% 100%;
+  animation: skin-sheen 7s ease-in-out infinite alternate;
+  color: var(--deco-ink) !important;
+  border-color: var(--deco-bronze-hi);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 3px 10px #0004;
+}
+.skin-quick.alt {
+  background: none;
+  color: inherit !important;
+}
+html:not([data-skin='phosphor']) .skin-quick.alt {
+  background: none;
+  animation: none;
+  color: #5a3a1e !important;
+  border-color: var(--deco-brass-lo);
+  box-shadow: none;
+}
+@keyframes skin-sheen {
+  from {
+    background-position:
+      0 0,
+      0 0;
+  }
+  to {
+    background-position:
+      0 0,
+      100% 0;
+  }
+}
+
+/* ── Notices: compact, Mac-like in Deco ─────────────────────────────── */
+.skin-notices {
+  position: absolute;
+  right: 12px;
+  top: calc(var(--skin-top-h) + 10px);
+  width: min(250px, 70vw);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 2;
+  pointer-events: none;
+}
+.skin-notice {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 8px;
+  overflow: hidden;
+  padding: 6px 8px;
+  background: #000;
+  border: 1px solid var(--skin-line);
+  font: 11px/1.3 var(--skin-f-row);
+  text-align: center;
+  cursor: pointer;
+  pointer-events: auto;
+  animation: skin-slide-in 0.22s ease-out;
+}
+.skin-notice > div {
+  min-width: 0;
+}
+.skin-notice b {
+  display: block;
+  font: 700 11px var(--skin-f-ui);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.skin-notice p {
+  margin: 1px auto 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.skin-notice p:empty {
+  display: none;
+}
+.skin-notice-icon {
+  display: none;
+}
+.skin-notice.t-fail b {
+  animation: skin-blink 1s steps(1) infinite;
+}
+.skin-notice i {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--skin-fg);
+  animation: skin-drain 10s linear forwards;
+}
+html:not([data-skin='phosphor']) .skin-notice {
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 10px;
+  background: rgba(43, 26, 15, 0.72);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border-color: #c9a24a66;
+  border-radius: 12px;
+  color: var(--deco-ivory);
+  box-shadow: 0 6px 20px #0009;
+}
+html:not([data-skin='phosphor']) .skin-notice-icon {
+  display: block;
+  position: relative;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--deco-iridescent);
+}
+html:not([data-skin='phosphor']) .skin-notice-icon::after {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: var(--deco-walnut-7);
+}
+html:not([data-skin='phosphor']) .skin-notice.t-fail .skin-notice-icon {
+  background: var(--deco-oxblood);
+}
+html:not([data-skin='phosphor']) .skin-notice.t-warn .skin-notice-icon {
+  background: var(--deco-brass-grad);
+}
+html:not([data-skin='phosphor']) .skin-notice b {
+  font: 700 11px var(--f-body);
+  letter-spacing: 0;
+  animation: none;
+}
+html:not([data-skin='phosphor']) .skin-notice i {
+  display: none;
+}
+@keyframes skin-slide-in {
+  from {
+    transform: translateX(30px);
+    opacity: 0;
+  }
+}
+@keyframes skin-drain {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0;
+  }
+}
+
+/* ── Action Log ─────────────────────────────────────────────────────── */
+.skin-log {
+  position: absolute;
+  right: 12px;
+  bottom: calc(var(--skin-foot-h) + 12px);
+  width: min(420px, calc(100vw - 24px));
+  max-height: 62vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--skin-panel);
+  border: 1px solid var(--skin-line);
+  border-radius: var(--skin-r);
+  z-index: 3;
+}
+html:not([data-skin='phosphor']) .skin-log {
+  border-radius: 14px;
+  box-shadow: 0 14px 40px #000c;
+}
+.skin-log header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px 8px 96px;
+  border-bottom: 1px solid var(--skin-line);
+  font: 700 14px var(--skin-f-ui);
+  letter-spacing: 0.06em;
+}
+html:not([data-skin='phosphor']) .skin-log header {
+  font: 400 17px var(--f-deco);
+  color: var(--deco-brass-hi);
+}
+.skin-log header span {
+  flex: 1;
+  text-align: center;
+}
+.skin-log ol {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  overflow: auto;
+  font: 12px/1.35 var(--f-mono);
+}
+.skin-log li {
+  display: grid;
+  grid-template-columns: auto 52px 1fr;
+  gap: 8px;
+  padding: 4px 10px;
+  border-bottom: 1px dotted var(--skin-line2);
+  text-align: left;
+}
+.skin-log li time {
+  color: var(--skin-fg2);
+  font-variant-numeric: tabular-nums;
+}
+.skin-log-kind {
+  color: var(--skin-fg2);
+}
+.skin-log li:is(.lg-fail, .lg-warn) .skin-log-kind {
+  color: var(--skin-fg);
+  animation: skin-blink 1s steps(1) infinite;
+}
+html:not([data-skin='phosphor']) .skin-log li.lg-fail .skin-log-kind {
+  color: #d9574e;
+  animation: none;
+}
+html:not([data-skin='phosphor']) .skin-log li.lg-warn .skin-log-kind {
+  color: var(--deco-brass-hi);
+  animation: none;
+}
+.skin-log li.skin-log-empty {
+  display: block;
+  padding: 14px 10px;
+  color: var(--skin-fg2);
+  text-align: center;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────── */
+.skin-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--skin-foot-h);
+  box-sizing: border-box;
+  display: flex;
+  gap: 2px;
+  border-top: 5px solid #000;
+  background: #000;
+}
+html:not([data-skin='phosphor']) .skin-foot {
+  gap: 6px;
+  padding: 0 8px 6px;
+  background: transparent;
+  border: 0;
+}
+.skin-cell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  overflow: hidden;
+  background: var(--skin-fill);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+html:not([data-skin='phosphor']) .skin-cell {
+  padding-top: 3px;
+  border: 1px solid var(--deco-brass-lo);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #2b1a0f, #1a100a);
+  font: 700 10px var(--f-label);
+  letter-spacing: 0.18em;
+  color: var(--deco-ivory);
+}
+.skin-log-btn {
+  flex: 0 0 auto;
+  padding: 0 14px;
+  border: 0;
+  font: 700 12px var(--skin-f-ui) !important;
+  cursor: pointer;
+  text-shadow: inherit;
+}
+.skin-log-btn[aria-expanded='true'] {
+  background: var(--skin-fg);
+  color: #000 !important;
+  text-shadow: none;
+}
+html:not([data-skin='phosphor']) .skin-log-btn {
+  background: var(--deco-brass-grad);
+  color: var(--deco-ink) !important;
+  border: 1px solid var(--deco-brass-hi);
+}
+html:not([data-skin='phosphor']) .skin-log-btn[aria-expanded='true'] {
+  background: var(--deco-iridescent);
+}
+
+/* ── Phosphor screen effects ────────────────────────────────────────── */
+#skin-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  display: none;
+}
+html[data-skin='phosphor'] #skin-fx {
+  display: block;
+}
+#skin-fx::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 1px,
+    rgba(0, 0, 0, 0.35) 1px 2px
+  );
+}
+#skin-fx::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 18%;
+  top: -18%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--ph-t1) 6%, transparent),
+    transparent
+  );
+  animation: skin-roll 8s linear infinite;
+}
+.skin-fx-vignette {
+  position: absolute;
+  inset: 0;
+  box-shadow:
+    inset 0 0 2rem color-mix(in srgb, var(--ph-t1) 25%, transparent),
+    inset 0 0 12rem rgba(0, 0, 0, 0.7);
+}
+@keyframes skin-roll {
+  to {
+    top: 100%;
+  }
+}
+
+/* ── Restart overlay ────────────────────────────────────────────────── */
+#skin-boot {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  overflow: hidden;
+  background: transparent;
+  cursor: default;
+}
+#skin-boot[hidden] {
+  display: none !important;
+}
+#skin-boot.dark {
+  background: #000;
+}
+.skin-boot-console {
+  box-sizing: border-box;
+  height: 100%;
+  margin: 0;
+  padding: 22px 28px;
+  overflow: hidden;
+  color: var(--ph-t1);
+  font: 15px/1.3 var(--f-mono);
+  text-shadow: 0 0 0.4rem currentColor;
+  white-space: pre-wrap;
+}
+.skin-boot-console .hex {
+  font-size: 10px;
+  line-height: 11px;
+  color: var(--ph-t2);
+}
+.skin-boot-cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1em;
+  background: var(--ph-t1);
+  vertical-align: -2px;
+}
+.skin-boot-cursor.off {
+  opacity: 0;
+}
+.skin-boot-console.on {
+  animation: skin-crt-on 0.45s ease-out both;
+}
+.skin-boot-console.off {
+  animation: skin-crt-off 0.7s cubic-bezier(0.7, 0, 0.9, 0.6) forwards;
+}
+.skin-boot-console.wobble {
+  animation: skin-wobble 0.5s steps(6) 1;
+}
+@keyframes skin-crt-on {
+  0% {
+    transform: scale(1, 0.004);
+    filter: brightness(6);
+  }
+  40% {
+    transform: scale(1, 0.06);
+  }
+  100% {
+    transform: none;
+    filter: brightness(1);
+  }
+}
+@keyframes skin-wobble {
+  25% {
+    transform: translate(-2px, 1px) skewX(2deg);
+  }
+  50% {
+    transform: translate(3px, -1px);
+  }
+  75% {
+    transform: translate(-1px, 0) skewX(-1deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+.skin-boot-afterglow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 14px 6px #fff;
+  opacity: 0;
+}
+#skin-boot.phosphor .skin-boot-afterglow {
+  background: var(--ph-t1);
+  box-shadow: 0 0 14px 6px var(--ph-t1);
+}
+.skin-boot-afterglow.go {
+  animation: skin-dot-fade 1s ease-out forwards;
+}
+@keyframes skin-dot-fade {
+  0% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+}
+.skin-boot-deco {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: radial-gradient(circle at 50% 45%, #3a2414, #0d0805 62%);
+  color: var(--deco-ivory);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.skin-boot-deco.show {
+  display: flex;
+}
+.skin-boot-deco.visible {
+  opacity: 1;
+}
+.skin-boot-deco .skin-burst {
+  width: 110px;
+  height: 110px;
+  animation: skin-spin 6s linear infinite;
+}
+.skin-boot-deco .skin-burst line {
+  stroke-width: 1.2;
+}
+@keyframes skin-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.skin-boot-deco h2 {
+  margin: 0;
+  font: 400 30px var(--f-deco);
+  letter-spacing: 0.08em;
+  color: var(--deco-brass-hi);
+  text-shadow: 0 0 16px #c9a24a66;
+}
+.skin-boot-progress {
+  width: 260px;
+  height: 6px;
+  overflow: hidden;
+  border: 1px solid var(--deco-brass-lo);
+  border-radius: 999px;
+  background: #1a100a;
+}
+.skin-boot-progress i {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--deco-iridescent);
+  transition: width 0.55s ease-out;
+}
+.skin-boot-deco p {
+  height: 14px;
+  margin: 0;
+  font: 700 11px var(--f-label);
+  letter-spacing: 0.24em;
+  color: var(--deco-ivory-dim);
+}
+.skin-boot-skip {
+  position: absolute;
+  right: 16px;
+  bottom: 12px;
+  z-index: 2;
+  font: 11px var(--f-mono);
+  letter-spacing: 0.2em;
+  color: #555;
+}
+
+/* ── Narrow screens ─────────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .skin-top {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .skin-radio {
+    justify-self: center;
+  }
+  .skin-brand-name {
+    display: none;
+  }
+  .skin-radio-display {
+    width: 130px;
+  }
+  .skin-top .skin-select {
+    max-width: 120px;
+  }
+  .skin-switch {
+    width: 180px;
+  }
+}
+/* Phones and portrait: the radio gets its own row under the menu and skin
+   buttons, the menu fills the width, and the footer keeps what matters. */
+@media (max-width: 760px) {
+  html.skin-active {
+    --skin-top-h: 104px;
+    --skin-tree-w: 100vw;
+  }
+  .skin-top {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'left right'
+      'radio radio';
+    align-content: center;
+    row-gap: 8px;
+    gap: 8px;
+    padding: 0 10px;
+  }
+  .skin-top-left {
+    grid-area: left;
+  }
+  .skin-top-right {
+    grid-area: right;
+    min-width: 0;
+    gap: 6px;
+  }
+  .skin-radio {
+    grid-area: radio;
+    justify-self: stretch;
+  }
+  .skin-radio-display {
+    flex: 1;
+    width: auto;
+  }
+  .skin-radio-panel {
+    width: calc(100vw - 20px);
+    max-height: min(420px, calc(100vh - 170px));
+  }
+  .skin-brand {
+    display: none;
+  }
+  .skin-top .skin-select {
+    max-width: 100px;
+  }
+  .skin-top-right {
+    justify-self: stretch;
+    justify-content: flex-end;
+  }
+  .skin-switch {
+    flex: 0 1 220px;
+    width: auto;
+    min-width: 130px;
+  }
+  .skin-switch-kicker,
+  .skin-switch-label {
+    display: none;
+  }
+  .skin-tree-panel {
+    width: 100vw;
+    border-right: 0;
+  }
+  /* The description card shrinks to a short strip: the name and what it does. */
+  html.skin-active .skin-info {
+    min-height: 0;
+    max-height: 76px;
+    margin: 4px 6px 6px;
+    padding: 6px 10px;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+  .skin-info.idle,
+  .skin-info .skin-info-key,
+  .skin-info p ~ p {
+    display: none;
+  }
+  html.skin-active .skin-info h3 {
+    margin: 0 0 2px;
+    padding-bottom: 0;
+    border-bottom: 0;
+    font-size: 12px;
+  }
+  html.skin-active {
+    --skin-foot-h: 30px;
+  }
+  html[data-skin='phosphor'].skin-active {
+    --skin-foot-h: 24px;
+  }
+  .skin-cell,
+  html:not([data-skin='phosphor']) .skin-cell {
+    font-size: 9px;
+  }
+  .skin-foot [data-skin-cell-skin],
+  .skin-foot [data-skin-cell-clock] {
+    display: none;
+  }
+  /* Side by side the corner readouts overlap, so each pair stacks. */
+  html.skin-active #intel-hud .hud-top-left {
+    top: 16px;
+  }
+  html.skin-active #intel-hud .hud-top-right {
+    top: 120px;
+  }
+  html.skin-active #intel-hud .hud-bottom-left {
+    bottom: 110px;
+  }
+  html.skin-active #intel-hud .hud-bottom-right {
+    bottom: 40px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #skin-fx::after,
+  .skin-warn-badge,
+  .skin-info-warning b,
+  .skin-notice,
+  .skin-notice.t-fail b,
+  .skin-log li .skin-log-kind,
+  .skin-boot-deco .skin-burst,
+  .skin-quick {
+    animation: none !important;
+  }
+  .skin-switch.glitch :is(.main, .alt) {
+    animation-duration: 0.01s;
+  }
+  .skin-tree-panel {
+    transition: none;
+  }
+}

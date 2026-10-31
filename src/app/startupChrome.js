@@ -8,9 +8,11 @@ export function startApplicationChrome({
   signal,
   initializeWelcome = initFirstRunExperience,
   initializeSettings,
+  initializeSkin,
 }) {
   let disposed = false;
   let firstRun;
+  let skinShell;
   let revealTimer;
   let resolveDelay;
   const minimumDelay = new Promise((resolve) => {
@@ -29,6 +31,7 @@ export function startApplicationChrome({
     })
     .then(() => {
       if (disposed || signal.aborted) return;
+      skinShell = initializeSkin?.({ styleManager, dataManager });
       loadingScreen.classList.add('hidden');
       loadingScreen.addEventListener('transitionend', revealFirstRun, {
         once: true,
@@ -49,6 +52,7 @@ export function startApplicationChrome({
     resolveDelay();
     loadingScreen.removeEventListener('transitionend', revealFirstRun);
     firstRun?.destroy();
+    skinShell?.destroy();
     (await keySetup.catch(() => null))?.destroy();
   };
 }

@@ -1088,5 +1088,14 @@
   "src/ui/styles/status-badge.css",
   "src/ui/statusBadge.test.mjs",
   "src/ui/cctvBadges.test.mjs",
-  "scripts/qa-status-badges.mjs"
+  "scripts/qa-status-badges.mjs",
+  "src/ui/skins/skinCatalog.js",
+  "src/ui/skins/skinBoot.js",
+  "src/ui/skins/skinNotices.js",
+  "src/ui/skins/skinMenuModel.js",
+  "src/ui/skins/skinMenuTree.js",
+  "src/ui/skins/skinRadio.js",
+  "src/ui/skins/skinShell.js",
+  "src/ui/skins/skins.test.mjs",
+  "src/ui/styles/skins.css"
 ]

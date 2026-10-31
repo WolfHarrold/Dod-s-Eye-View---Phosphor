@@ -233,6 +233,14 @@ async function boot(page, url) {
     ))
       el.remove();
   });
+  // The skin shell mounts after the data manager and shows its own welcome
+  // card over the middle of the globe.
+  await page.waitForSelector('#skin-shell:not([hidden])', { timeout: 60_000 });
+  await page.evaluate(() =>
+    document
+      .querySelector('#skin-welcome:not([hidden]) [data-skin-welcome-dismiss]')
+      ?.click(),
+  );
 }
 
 /** Run `test(uiState, arg)` in the page until it is true. */
