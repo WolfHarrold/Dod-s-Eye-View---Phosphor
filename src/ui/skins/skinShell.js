@@ -268,6 +268,39 @@ export function initSkinShell({
     subtree: true,
   });
 
+  // Panels the app opens itself after a pick on the globe (a camera, a
+  // station, a place, a street photo) are shown in place, as before.
+  const REVEALED_PANELS = new Set([
+    'cctv-panel',
+    'radio-panel',
+    'global-context-panel',
+    'street-level-panel',
+  ]);
+  const setPanelCollapsed = sm.setPanelCollapsed;
+  if (typeof setPanelCollapsed === 'function') {
+    sm.setPanelCollapsed = function (panelId, collapsed, options = {}) {
+      const result = setPanelCollapsed.apply(this, arguments);
+      if (
+        collapsed === false &&
+        options?.explicit &&
+        !options.restore &&
+        REVEALED_PANELS.has(panelId)
+      )
+        $(panelId)?.classList.add('skin-panel-open');
+      return result;
+    };
+  }
+  const streetPhoto = $('sl-viewer-wrap');
+  const streetPhotoObserver = streetPhoto
+    ? new MutationObserver(() => {
+        if (!streetPhoto.hidden) openPanel('street-level-panel');
+      })
+    : null;
+  streetPhotoObserver?.observe(streetPhoto, {
+    attributes: true,
+    attributeFilter: ['hidden'],
+  });
+
   // ── Menu tree ───────────────────────────────────────────────────────
   let nodes = [];
   const ctx = {
@@ -641,12 +674,17 @@ export function initSkinShell({
     notices.log('click', t('Welcome: Quick Start'));
     void quickStart();
   });
-  on(welcome.querySelector('[data-skin-welcome-dismiss]'), 'click', () => {
+  function dismissWelcome() {
     notices.log('click', t("Welcome: I'll explore myself"));
     welcome.hidden = true;
     prefs.welcomeSeen = true;
     writeSkinPreferences({ ...prefs, skin }, storage);
-  });
+  }
+  on(
+    welcome.querySelector('[data-skin-welcome-dismiss]'),
+    'click',
+    dismissWelcome,
+  );
 
   // ── Global keys and clicking outside pop-ups ────────────────────────
   on(globalThis, 'keydown', (event) => {
@@ -667,6 +705,8 @@ export function initSkinShell({
     if (event.key === 'Escape') {
       setPicker(false);
       radio.close();
+      // Escape answers the welcome card like "I'll explore myself".
+      if (!welcome.hidden) dismissWelcome();
     }
   });
   const OUTSIDE = [
@@ -714,6 +754,9 @@ export function initSkinShell({
       for (const stop of timers) stop();
       timers.clear();
       toastObserver?.disconnect();
+      streetPhotoObserver?.disconnect();
+      if (typeof setPanelCollapsed === 'function')
+        sm.setPanelCollapsed = setPanelCollapsed;
       unsubscribeLayers?.();
       radio.destroy();
       tree.destroy();
