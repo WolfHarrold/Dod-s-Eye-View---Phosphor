@@ -1,14 +1,15 @@
 import {
   BOM_RADARS,
+  BOM_RADAR_FRAME_LIMIT,
   BOM_STATIONS,
-  extractBomFrames,
+  bomCandidateTimes,
+  bomFrameName,
   normalizeBomObservation,
   parseBomFrameName,
 } from '../../src/layers/bom/model.js';
 import {
   readResponseBytesCapped,
   readResponseJsonCapped,
-  readResponseTextCapped,
   coalesceProxyRequest,
 } from './common/http.js';
 import { makeRateLimiter, clientKey } from './common/rate-limit.js';
@@ -25,6 +26,13 @@ const MIB = 1024 * 1024;
 const OBSERVATIONS_TTL_MS = 10 * 60_000;
 const FRAMES_TTL_MS = 2 * 60_000;
 const IMAGE_CACHE_LIMIT = 32;
+/** Scan times probed per radar: 40 minutes, enough for a full loop. */
+const FRAME_CANDIDATES = 8;
+/** A scan not yet published is asked for again after this long. */
+const MISS_RETRY_MS = 90_000;
+const MISS_LIMIT = 256;
+/** Minute within each five that BoM's radars scan at, most likely first. */
+const PHASES = [4, 0, 1, 2, 3];
 const STATION_CONCURRENCY = 4;
 const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 
@@ -36,6 +44,10 @@ export function bomProxy({
 } = {}) {
   const cache = new Map();
   const images = new Map();
+  /** Frame name → when it was last found not yet published. */
+  const missing = new Map();
+  /** Radar id → the minute within each five that it scans at. */
+  const phases = new Map();
   const inFlight = new Map();
   const allow = makeRateLimiter({
     windowMs: 60_000,
@@ -57,6 +69,8 @@ export function bomProxy({
         if (!response.ok) {
           await response.body?.cancel();
           lastError = new Error(`upstream_http_${response.status}`);
+          // Not found is an answer, not an outage: the mirror has the same files.
+          if (response.status === 404) break;
           continue;
         }
         return await read(response, signal);
@@ -92,21 +106,72 @@ export function bomProxy({
     return { schemaVersion: 1, fetchedAt: now(), stations };
   }
 
+  /** One radar frame's bytes, kept so the image route need not refetch them. */
+  async function loadImage(name) {
+    const hit = images.get(name);
+    if (hit) return hit;
+    const { promise } = coalesceProxyRequest(inFlight, `image:${name}`, () =>
+      fetchImage(name),
+    );
+    const bytes = await promise;
+    images.set(name, bytes);
+    while (images.size > IMAGE_CACHE_LIMIT)
+      images.delete(images.keys().next().value);
+    return bytes;
+  }
+
+  async function frameExists(name) {
+    if (images.has(name)) return true;
+    const missedAt = missing.get(name);
+    if (missedAt !== undefined && now() - missedAt < MISS_RETRY_MS)
+      return false;
+    try {
+      await loadImage(name);
+      missing.delete(name);
+      return true;
+    } catch {
+      missing.delete(name);
+      missing.set(name, now());
+      while (missing.size > MISS_LIMIT)
+        missing.delete(missing.keys().next().value);
+      return false;
+    }
+  }
+
+  /**
+   * BoM no longer lists radar frames on a public page, so ask for each
+   * expected scan by name. The scan minute is learned once per radar and
+   * relearned if a radar stops answering on it.
+   */
+  async function findFrames(radar) {
+    const look = async (phase, count) => {
+      const names = bomCandidateTimes(now(), phase, count).map((ms) =>
+        bomFrameName(radar.id, ms),
+      );
+      const found = await Promise.all(names.map(frameExists));
+      return names.filter((_, i) => found[i]).reverse();
+    };
+    const known = phases.get(radar.id);
+    let names = known === undefined ? [] : await look(known, FRAME_CANDIDATES);
+    if (names.length === 0) {
+      for (const phase of new Set(PHASES)) {
+        if (phase === known || (await look(phase, 3)).length === 0) continue;
+        phases.set(radar.id, phase);
+        names = await look(phase, FRAME_CANDIDATES);
+        break;
+      }
+    }
+    return names
+      .slice(-BOM_RADAR_FRAME_LIMIT)
+      .map((name) => parseBomFrameName(name));
+  }
+
   async function fetchFrames() {
     const radars = await Promise.all(
-      BOM_RADARS.map(async (radar) => {
-        try {
-          const html = await upstream(
-            `/products/${radar.id}.loop.shtml`,
-            (response, signal) =>
-              readResponseTextCapped(response, 1 * MIB, signal),
-            15_000,
-          );
-          return { id: radar.id, frames: extractBomFrames(html, radar.id) };
-        } catch {
-          return { id: radar.id, frames: [], error: 'unavailable' };
-        }
-      }),
+      BOM_RADARS.map(async (radar) => ({
+        id: radar.id,
+        frames: await findFrames(radar),
+      })),
     );
     if (radars.every((radar) => radar.frames.length === 0))
       throw new Error('no_radar_frames');
@@ -179,18 +244,7 @@ export function bomProxy({
         const name = path.slice('/radar/'.length);
         if (!parseBomFrameName(name))
           return json(400, { error: 'invalid_frame' });
-        let bytes = images.get(name);
-        if (!bytes) {
-          const { promise } = coalesceProxyRequest(
-            inFlight,
-            `image:${name}`,
-            () => fetchImage(name),
-          );
-          bytes = await promise;
-          images.set(name, bytes);
-          while (images.size > IMAGE_CACHE_LIMIT)
-            images.delete(images.keys().next().value);
-        }
+        const bytes = await loadImage(name);
         if (res.destroyed) return;
         res.writeHead(200, {
           'Content-Type': 'image/png',

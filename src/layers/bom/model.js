@@ -118,21 +118,23 @@ export function parseBomFrameName(name) {
   return { radar: match[1], name, time: new Date(ms).toISOString() };
 }
 
+/** BoM's transparency name for one radar scan at a UTC minute. */
+export function bomFrameName(radarId, ms) {
+  const stamp = new Date(ms).toISOString().slice(0, 16).replace(/\D/g, '');
+  return `${radarId}.T.${stamp}.png`;
+}
+
 /**
- * Frame names listed on a radar's loop page, oldest first, newest
- * `BOM_RADAR_FRAME_LIMIT` only. The page's script lists them as
- * `/radar/IDR683.T.202610310540.png`; anything else is ignored.
+ * Scan times to look for, newest first. BoM's radars scan every five minutes
+ * at a fixed minute within each five (`phase`; 4 for Bairnsdale and
+ * Melbourne as of October 2026), and no longer list the frames anywhere
+ * public, so the proxy asks for each expected frame by name.
  */
-export function extractBomFrames(html, radarId) {
-  if (typeof html !== 'string' || !RADAR_IDS.has(radarId)) return [];
-  const found = new Map();
-  for (const match of html.matchAll(/IDR\d{3}\.T\.\d{12}\.png/g)) {
-    const frame = parseBomFrameName(match[0]);
-    if (frame && frame.radar === radarId) found.set(frame.name, frame);
-  }
-  return [...found.values()]
-    .sort((a, b) => a.time.localeCompare(b.time))
-    .slice(-BOM_RADAR_FRAME_LIMIT);
+export function bomCandidateTimes(nowMs, phase, count) {
+  const minute = 60_000;
+  let ms = Math.floor(nowMs / minute) * minute;
+  while (new Date(ms).getUTCMinutes() % 5 !== phase) ms -= minute;
+  return Array.from({ length: count }, (_, i) => ms - i * 5 * minute);
 }
 
 /** Lon/lat degrees covered by a radar's square transparency. */

@@ -5,7 +5,8 @@ import {
   BOM_STATIONS,
   bomRadarBounds,
   bomTemperatureColor,
-  extractBomFrames,
+  bomCandidateTimes,
+  bomFrameName,
   normalizeBomObservation,
   parseBomFrameName,
   validateBomRadar,
@@ -99,21 +100,22 @@ test('only known radars and real UTC stamps are accepted as frame names', () => 
   assert.equal(parseBomFrameName('IDR683.T.202610310540.png?x=1'), null);
 });
 
-test('loop pages yield the newest frames for their own radar, oldest first', () => {
-  const minutes = [0, 5, 10, 15, 20, 25, 30, 35];
-  const html = [
-    ...minutes.map(
-      (m) =>
-        `theImageNames[${m}] = "/radar/IDR683.T.2026103105${String(m).padStart(2, '0')}.png";`,
-    ),
-    'theImageNames[9] = "/radar/IDR023.T.202610310535.png";',
-    'theImageNames[9] = "/radar/IDR683.T.202610310535.png";',
-  ].join('\n');
-  const frames = extractBomFrames(html, 'IDR683');
-  assert.equal(frames.length, BOM_RADAR_FRAME_LIMIT);
-  assert.equal(frames.at(-1).name, 'IDR683.T.202610310535.png');
-  assert.ok(frames.every((f, i) => i === 0 || f.time > frames[i - 1].time));
-  assert.deepEqual(extractBomFrames(html, 'IDR999'), []);
+test('scan times step back five minutes from the newest on the radar minute', () => {
+  const now = Date.UTC(2026, 9, 31, 6, 41, 30);
+  const names = bomCandidateTimes(now, 4, 3).map((ms) =>
+    bomFrameName('IDR683', ms),
+  );
+  assert.deepEqual(names, [
+    'IDR683.T.202610310639.png',
+    'IDR683.T.202610310634.png',
+    'IDR683.T.202610310629.png',
+  ]);
+  assert.ok(names.every((name) => parseBomFrameName(name)));
+  assert.equal(
+    bomFrameName('IDR023', bomCandidateTimes(now, 0, 1)[0]),
+    'IDR023.T.202610310640.png',
+  );
+  assert.ok(BOM_RADAR_FRAME_LIMIT <= 8);
 });
 
 test('radar bounds are a square of the radar range around the site', () => {

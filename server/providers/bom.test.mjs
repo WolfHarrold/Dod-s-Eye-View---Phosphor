@@ -54,22 +54,62 @@ test('observations are fetched per station with a browser user agent', async () 
   );
 });
 
-test('a failed origin falls back to the next one', async () => {
+test('radar frames are found by probing the expected scan times', async () => {
+  const NOW = Date.UTC(2026, 9, 31, 6, 41, 30);
+  const requested = [];
+  // Scans at minutes ending 4 and 9; the newest is not published yet.
+  const published = (url) => {
+    const stamp = /\.T\.(\d{12})\.png$/.exec(url)?.[1];
+    return stamp && /[49]$/.test(stamp) && stamp !== '202610310639';
+  };
   const plugin = bomProxy({
-    fetchImpl: async (url) =>
-      url.startsWith('https://www.')
-        ? new Response('no', { status: 403 })
-        : new Response(
-            'x "/radar/IDR683.T.202610310540.png" "/radar/IDR023.T.202610310535.png"',
-          ),
+    now: () => NOW,
+    fetchImpl: async (url) => {
+      requested.push(url);
+      if (url.startsWith('https://www.') && url.includes('IDR023'))
+        return new Response('busy', { status: 503 });
+      return published(url)
+        ? new Response(PNG)
+        : new Response('missing', { status: 404 });
+    },
   });
   const { status, body } = await call(plugin, '/radar');
   assert.equal(status, 200);
-  const value = JSON.parse(body);
-  assert.deepEqual(
-    value.radars.map((r) => r.frames.map((f) => f.name)),
-    [['IDR683.T.202610310540.png'], ['IDR023.T.202610310535.png']],
+  const radars = JSON.parse(body).radars;
+  for (const radar of radars) {
+    assert.equal(radar.frames.length, 6);
+    assert.equal(radar.frames.at(-1).name, `${radar.id}.T.202610310634.png`);
+    assert.equal(radar.frames[0].name, `${radar.id}.T.202610310609.png`);
+  }
+  // A 404 is not retried on the mirror; a 503 is.
+  assert.ok(
+    !requested.includes(
+      'https://reg.bom.gov.au/radar/IDR683.T.202610310639.png',
+    ),
   );
+  assert.ok(
+    requested.includes(
+      'https://reg.bom.gov.au/radar/IDR023.T.202610310634.png',
+    ),
+  );
+  // Probed frames are served from the cache.
+  const before = requested.length;
+  const image = await call(plugin, '/radar/IDR683.T.202610310634.png');
+  assert.equal(image.status, 200);
+  assert.equal(requested.length, before);
+});
+
+test('a radar on another scan minute is found by trying the others', async () => {
+  const NOW = Date.UTC(2026, 9, 31, 6, 41, 30);
+  const plugin = bomProxy({
+    now: () => NOW,
+    fetchImpl: async (url) =>
+      /T\.\d{11}[05]\.png$/.test(url)
+        ? new Response(PNG)
+        : new Response('missing', { status: 404 }),
+  });
+  const radars = JSON.parse((await call(plugin, '/radar')).body).radars;
+  assert.equal(radars[0].frames.at(-1).name, 'IDR683.T.202610310640.png');
 });
 
 test('radar images are validated by name and by PNG signature', async () => {
