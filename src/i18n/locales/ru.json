@@ -3406,5 +3406,20 @@
   "I'll explore myself": "Разберусь сам",
   "ACTION LOG": "ЖУРНАЛ ДЕЙСТВИЙ",
   "CLOSE": "ЗАКРЫТЬ",
-  "ANY KEY TO SKIP": "ЛЮБАЯ КЛАВИША — ПРОПУСТИТЬ"
+  "ANY KEY TO SKIP": "ЛЮБАЯ КЛАВИША — ПРОПУСТИТЬ",
+  "Sports": "Спорт",
+  "Comedy": "Юмор",
+  "Blues & Soul": "Блюз и соул",
+  "Hip Hop": "Хип-хоп",
+  "Religious": "Религиозное",
+  "Country & Folk": "Кантри и фолк",
+  "Dance & Electronic": "Танцевальная и электроника",
+  "Ambient & Chill": "Эмбиент и чил",
+  "Kids": "Детское",
+  "Public & Community": "Общественное радио",
+  "{name} is off air, trying the next station": "{name} не в эфире, пробуем следующую станцию",
+  "The station did not start playing.": "Станция не начала воспроизведение.",
+  "Emergency & Traffic": "Экстренные службы и трафик",
+  "Reggae & Caribbean": "Регги и Карибы",
+  "Eclectic": "Эклектика"
 }

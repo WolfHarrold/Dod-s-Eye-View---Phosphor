@@ -616,6 +616,9 @@ html:not([data-skin='phosphor']) .skin-radio-list button.now {
   background: var(--deco-brass-grad);
   color: var(--deco-ink) !important;
 }
+.skin-radio-list button.off {
+  opacity: 0.45;
+}
 .skin-radio-list button small {
   grid-column: 1;
   font-size: 11px;

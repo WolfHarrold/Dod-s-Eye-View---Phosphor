@@ -9,7 +9,15 @@ import {
 } from './skinCatalog.js';
 import { BOOT_LOGIN_MASK, BOOT_PASSWORD } from './skinBoot.js';
 import { buildMenuTree, nodeMatches, walkTree } from './skinMenuModel.js';
-import { distanceBand, distanceKm, pickLuckyStation } from './skinRadio.js';
+import {
+  distanceBand,
+  distanceKm,
+  pickLuckyStation,
+  stationGenre,
+  stationName,
+  GENRE_NAMES,
+} from './skinRadio.js';
+import { STATION_GENRES } from './stationGenres.js';
 import { logTime } from './skinNotices.js';
 
 function memoryStorage(initial = {}) {
@@ -225,6 +233,97 @@ test('Feeling Lucky walks outward from the nearest unheard station, then wraps',
     station: null,
     wrapped: false,
   });
+});
+
+test('Feeling Lucky skips stations that failed to play', () => {
+  const ranked = ['a', 'b', 'c'].map((id, km) => ({ station: { id }, km }));
+  const failed = new Set(['a']);
+  assert.equal(pickLuckyStation(ranked, new Set(), failed).station.id, 'b');
+  assert.deepEqual(
+    pickLuckyStation(ranked, new Set(['b', 'c']), failed).station.id,
+    'b',
+  );
+  assert.deepEqual(
+    pickLuckyStation(ranked, new Set(), new Set(['a', 'b', 'c'])),
+    {
+      station: null,
+      wrapped: false,
+    },
+  );
+});
+
+test('live directory tags fold into a short list of genres', () => {
+  const genre = (...tags) => stationGenre({ tags });
+  // Spellings seen side by side in the live directory.
+  for (const tag of ['80s', '80er', "80's", '1930', '78', 'classic vinyl'])
+    assert.equal(genre(tag), 'Oldies', tag);
+  // A network or band tag first falls through to the next tag.
+  assert.equal(genre('dab', 'capital', 'pop'), 'Pop');
+  assert.equal(genre('#', 'anthems'), 'Dance & Electronic');
+  assert.equal(genre('noaa weather radio'), 'Weather');
+  assert.equal(genre('k pop'), 'World');
+  assert.equal(genre('dancehall'), 'Reggae & Caribbean');
+  assert.equal(genre('classic rock'), 'Rock');
+  assert.equal(genre('choral'), 'Classical');
+  assert.equal(genre('dab', 'capital'), '');
+  // With no usable tag, the name is tried.
+  const named = (name, ...tags) => stationGenre({ name, tags });
+  assert.equal(named('Adroit Jazz Underground'), 'Jazz');
+  assert.equal(named('100 BEST IBIZA DEEP HOUSE', 'dab'), 'Dance & Electronic');
+  assert.equal(named('Rock Antenne', 'pop'), 'Pop');
+  assert.equal(named('Radio 1'), '');
+  assert.equal(genre(), '');
+});
+
+test('hand-checked station genres use the finder genre names and win over tags', () => {
+  const unknown = Object.entries(STATION_GENRES).filter(
+    ([, genre]) => !GENRE_NAMES.includes(genre),
+  );
+  assert.deepEqual(unknown, []);
+  for (const id of Object.keys(STATION_GENRES))
+    assert.match(
+      id,
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+    );
+  assert.equal(
+    stationGenre({
+      id: '399ca326-0f67-4015-a51b-d7ba2bd4ebbe',
+      name: 'KEXP',
+      tags: ['news'],
+    }),
+    'Rock',
+  );
+});
+
+test('tags seen on untagged live stations now find a genre', () => {
+  const genre = (...tags) => stationGenre({ tags });
+  assert.equal(genre('police scanner'), 'Emergency & Traffic');
+  assert.equal(genre('traffic'), 'Emergency & Traffic');
+  assert.equal(genre('campursari', 'dangdut'), 'World');
+  assert.equal(genre('manele'), 'World');
+  assert.equal(genre('hardcore', 'hardstyle'), 'Dance & Electronic');
+  assert.equal(genre('idm'), 'Dance & Electronic');
+  assert.equal(genre('zouk'), 'Reggae & Caribbean');
+  assert.equal(genre('soca', 'various'), 'Reggae & Caribbean');
+  assert.equal(genre('mpb', 'romantica'), 'Latin');
+  assert.equal(genre('bhakti', 'devotional'), 'Religious');
+  assert.equal(genre('info'), 'News');
+  assert.equal(genre('economics'), 'News');
+  assert.equal(genre('california', 'eclectic'), 'Eclectic');
+  assert.equal(genre('composer', 'contemporary', 'experimental'), 'Classical');
+  assert.equal(genre('main', 'mainstream'), 'Pop');
+});
+
+test('station names decode the HTML entities the directory sends', () => {
+  assert.equal(
+    stationName({ name: 'KISS - The Best Vibes &amp; Energy' }),
+    'KISS - The Best Vibes & Energy',
+  );
+  assert.equal(
+    stationName({ name: 'Rock &#39;n&#x27; Roll' }),
+    "Rock 'n' Roll",
+  );
+  assert.equal(stationName({ name: 'Fish &chips; &#1;' }), 'Fish &chips; &#1;');
 });
 
 test('station distances fall into the finder bands', () => {
