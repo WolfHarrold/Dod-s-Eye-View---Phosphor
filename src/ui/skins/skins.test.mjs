@@ -264,6 +264,12 @@ test('live directory tags fold into a short list of genres', () => {
   assert.equal(genre('classic rock'), 'Rock');
   assert.equal(genre('choral'), 'Classical');
   assert.equal(genre('dab', 'capital'), '');
+  // With no usable tag, the name is tried.
+  const named = (name, ...tags) => stationGenre({ name, tags });
+  assert.equal(named('Adroit Jazz Underground'), 'Jazz');
+  assert.equal(named('100 BEST IBIZA DEEP HOUSE', 'dab'), 'Dance & Electronic');
+  assert.equal(named('Rock Antenne', 'pop'), 'Pop');
+  assert.equal(named('Radio 1'), '');
   assert.equal(genre(), '');
 });
 

@@ -74,14 +74,22 @@ const GENRES = [
   ],
 ];
 
-/** The station's genre bucket, or an empty string when no tag fits one. */
+const genreOf = (text) =>
+  GENRES.find(([, pattern]) => pattern.test(text.toLocaleLowerCase()));
+
+/**
+ * The station's genre bucket, or an empty string when nothing fits one. Tags
+ * win; a station with no usable tag is often named for what it plays
+ * ("Adroit Jazz Underground", "100 Best Ibiza Deep House"), so its name is
+ * tried next.
+ */
 export function stationGenre(station) {
   for (const tag of station?.tags || []) {
-    const text = String(tag || '').toLocaleLowerCase();
-    const bucket = GENRES.find(([, pattern]) => pattern.test(text));
+    const bucket = genreOf(String(tag || ''));
     if (bucket) return t(bucket[0]);
   }
-  return '';
+  const bucket = genreOf(stationName(station).replace(/[_-]+/g, ' '));
+  return bucket ? t(bucket[0]) : '';
 }
 
 const ENTITIES = {

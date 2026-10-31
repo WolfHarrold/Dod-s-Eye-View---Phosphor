@@ -4,6 +4,8 @@
 // query, then opens a sample of streams the way an <audio> element would.
 //
 //   node tools/radio-live-probe.mjs [--streams 60] [--anchor lat,lon] [--out file.json]
+//
+// --out also lists every station the Genre tab files under OTHER.
 
 import { writeFile } from 'node:fs/promises';
 import { createRadioProxyMiddleware } from '../server/providers/radio/catalog.js';
@@ -234,7 +236,18 @@ if (stations.length) {
       return top(seen, 5);
     })(),
   };
+  report.untagged = stations
+    .filter((station) => !stationGenre(station))
+    .map(({ id, name, tags, homepage, country, languages }) => ({
+      id,
+      name,
+      tags,
+      homepage,
+      country,
+      languages,
+    }));
   log(JSON.stringify(report.finder, null, 2));
+  log(`${report.untagged.length} stations have no genre`);
 
   log(`— Streams: nearest ${streamSample / 2} plus ${streamSample / 2} spread`);
   const nearest = ranked.slice(0, streamSample / 2).map((entry) => entry.station);
