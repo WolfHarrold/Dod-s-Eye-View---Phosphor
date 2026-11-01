@@ -179,6 +179,24 @@ export const LAYER_MENU = Object.freeze({
     desc: msg('Mapped data centres.'),
     result: msg('Adds site markers. Zoom in to load them.'),
   },
+  'latrobe-power': {
+    group: 'ground',
+    label: msg('Latrobe Valley Power'),
+    desc: msg(
+      'Live output of Loy Yang A, Loy Yang B and Yallourn W from Open Electricity.',
+    ),
+    result: msg(
+      'Adds a column at each station that rises with its output. Needs a free Open Electricity key.',
+    ),
+  },
+  'local-places': {
+    group: 'ground',
+    label: msg('Places of Interest'),
+    desc: msg(
+      'Heritage places, landmarks, parks, Gunaikurnai places and 4-star attractions in Victoria.',
+    ),
+    result: msg('Adds coloured place markers. Zoom in to load them.'),
+  },
   'local-dams': {
     group: 'ground',
     label: msg('Dams'),
@@ -253,6 +271,14 @@ export const LAYER_MENU = Object.freeze({
     label: msg('Wind'),
     desc: msg('Animated wind flow.'),
     result: msg('Adds moving streaks. Heavier on the graphics card.'),
+  },
+  'bom-weather': {
+    group: 'hazards',
+    label: msg('Australian Weather (BoM)'),
+    desc: msg(
+      'Bureau of Meteorology rain radar and station temperatures for Gippsland and Melbourne.',
+    ),
+    result: msg('Adds a looping radar and temperature markers.'),
   },
   'air-quality': {
     group: 'hazards',

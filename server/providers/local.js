@@ -28,6 +28,9 @@ import { firePerimetersProxy } from './firePerimeters.js';
 import { gnssIntegrityProxy } from './gnssIntegrity.js';
 import { cycloneProxy } from './cyclones.js';
 import { windProxy } from './wind.js';
+import { bomProxy } from './bom.js';
+import { localPlacesProxy } from './localPlaces.js';
+import { openElectricityProxy } from './openElectricity.js';
 
 /**
  * Construct the local provider plugins in their established order.
@@ -60,6 +63,9 @@ function localProviderPlugins({ realtime, gemini } = {}) {
     googlePlacesContextProxy(),
     windProxy(),
     weatherProxy(),
+    bomProxy(),
+    localPlacesProxy(),
+    openElectricityProxy(),
     cycloneProxy(),
     mapillaryProxy(),
     firePerimetersProxy(),

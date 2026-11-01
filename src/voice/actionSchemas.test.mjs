@@ -39,7 +39,8 @@ test('the complete Realtime tool payload pins the manifest-generated layer relea
     // Street Level and GNSS extend the manifest; tracked and analyst aircraft describe broadcasts.
     // Air quality (ECCC AQHI) extends the manifest.
     // Phosphor adds one set_visual_style value.
-    'e12e885b0261cbcf3fc569a5d2cc0499eed0c621ccef5c1808bb735cd23e7397',
+    // Australian weather (BoM) extends the manifest.
+    '78df894150ddce6a54ab2fcbdc2496aaff70d2bd456c6c3e41d3171aff828f0a',
   );
 });
 

@@ -63,6 +63,8 @@ const PANEL_GROUPS = [
       'local-datacenters',
       'telegeography-submarine-cables',
       'local-dams',
+      'local-places',
+      'latrobe-power',
     ],
   },
   {
@@ -78,6 +80,7 @@ const PANEL_GROUPS = [
   {
     label: msg('Weather'),
     ids: [
+      'bom-weather',
       'air-quality',
       'wind',
       'weather-radar',
@@ -461,6 +464,7 @@ export class LayerPanel {
               'weather-lightning',
               'weather-cyclones',
               'air-quality',
+              'bom-weather',
             ].includes(layer.id),
         )
         .map((layer) => ({
