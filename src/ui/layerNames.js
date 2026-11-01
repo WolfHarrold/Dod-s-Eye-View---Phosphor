@@ -27,6 +27,8 @@ export const LAYER_NAME_KEYS = Object.freeze({
   'military-awareness': msg('Global Context'),
   'local-datacenters': msg('Datacenters'),
   'local-dams': msg('Dams'),
+  'local-places': msg('Places of interest'),
+  'latrobe-power': msg('Latrobe Valley power'),
   'telegeography-submarine-cables': msg('Submarine Cables'),
   'local-firms': msg('FIRMS Active Fires'),
   'local-adsb': msg('Local ADS-B'),
@@ -40,6 +42,7 @@ export const LAYER_NAME_KEYS = Object.freeze({
   'weather-lightning': msg('Lightning density'),
   'weather-cyclones': msg('Cyclone advisories'),
   'air-quality': msg('Air quality'),
+  'bom-weather': msg('Australian weather (BoM)'),
   directions: msg('Directions'),
   'alpr-cameras': msg('ALPR Cameras'),
 });

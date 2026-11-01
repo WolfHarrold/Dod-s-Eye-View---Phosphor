@@ -177,6 +177,29 @@ export const DATA_CREDITS = [
       '· <a href="https://eccc-msc.github.io/open-data/licence/readme_en/" target="_blank" rel="noopener">ECCC Data Servers End-use Licence</a>',
   },
   {
+    key: 'bom-weather',
+    html:
+      'Australian radar and station observations: ' +
+      '<a href="https://www.bom.gov.au/catalogue/data-feeds.shtml" target="_blank" rel="noopener">Bureau of Meteorology</a> ' +
+      '· free for non-commercial use · <a href="https://www.bom.gov.au/other/copyright.shtml" target="_blank" rel="noopener">© Commonwealth of Australia</a>',
+  },
+  {
+    key: 'latrobe-power',
+    html:
+      'Power station output and Victorian spot price: ' +
+      '<a href="https://openelectricity.org.au" target="_blank" rel="noopener">Open Electricity</a> ' +
+      '(<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>), from AEMO data',
+  },
+  {
+    key: 'local-places',
+    html:
+      'Places of interest: Vicmap Features of Interest and parks, ' +
+      '<a href="https://www.land.vic.gov.au/maps-and-spatial/spatial-data/vicmap-catalogue" target="_blank" rel="noopener">© State of Victoria</a> (CC BY 4.0) ' +
+      '· <a href="https://vhd.heritagecouncil.vic.gov.au/" target="_blank" rel="noopener">Victorian Heritage Database</a>, Heritage Council of Victoria ' +
+      '· Gunaikurnai place names shared with the support of GLaWAC ' +
+      '· ratings from Google Maps',
+  },
+  {
     key: 'overture-military-names',
     html: 'Military area names: <a href="https://overturemaps.org" target="_blank" rel="noopener">Overture Maps Foundation</a> (ODbL)',
   },
