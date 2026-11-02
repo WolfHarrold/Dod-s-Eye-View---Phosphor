@@ -2,6 +2,7 @@ import { t, msg } from '../../i18n/index.js';
 import { LOCALES } from '../../i18n/locale.js';
 import { layerFeedState } from '../../data/feedState.js';
 import { SKINS, PHOSPHOR_COLOURS } from './skinCatalog.js';
+import { PICTURE_PRESETS } from './skinPicture.js';
 
 /*
  * The one menu tree that replaces the scattered panels. Every leaf drives a
@@ -477,6 +478,102 @@ function liveDataFolder(ctx) {
 }
 
 /**
+ * Every panel of the classic layout, so nothing the app could do before the
+ * skins is out of reach. Each opens as a floating, skinned window.
+ */
+export const TOOL_WINDOWS = Object.freeze([
+  {
+    panel: 'data-panel',
+    label: msg('Data Layers'),
+    desc: msg('The classic layer list with every layer and its live status.'),
+  },
+  {
+    panel: 'pp-toggles',
+    label: msg('Display & Effects'),
+    desc: msg(
+      'The classic display panel: glow, sharpen, readouts, detection and scope settings with fine sliders.',
+    ),
+  },
+  {
+    panel: 'param-slider-panel',
+    label: msg('Filter Fine-Tuning'),
+    desc: msg('Fine sliders for the current globe filter.'),
+  },
+  {
+    panel: 'global-context-panel',
+    label: msg('Area Briefing'),
+    desc: msg(
+      'Contacts, missions, arrivals and the regional summary for where you are looking.',
+    ),
+  },
+  {
+    panel: 'weather-panel',
+    label: msg('Weather'),
+    desc: msg('Local weather for where the camera is.'),
+  },
+  {
+    panel: 'radio-panel',
+    label: msg('Radio'),
+    desc: msg(
+      'The full radio panel with the tuner dial, genre filter and the local receiver.',
+    ),
+    layerId: 'radio',
+  },
+  {
+    panel: 'cctv-panel',
+    label: msg('Public Cameras'),
+    desc: msg('Live public camera feeds near where you are looking.'),
+    layerId: 'cctv',
+  },
+  {
+    panel: 'street-level-panel',
+    label: msg('Street-Level Photos'),
+    desc: msg('Street photos and their viewer.'),
+    layerId: 'street-level',
+  },
+  {
+    panel: 'recent-imagery-panel',
+    label: msg('Recent Satellite Imagery'),
+    desc: msg('Recent satellite passes over the area in view.'),
+    layerId: 'recent-imagery',
+  },
+  {
+    panel: 'scene-panel',
+    label: msg('Scenes'),
+    desc: msg('Saved camera paths, layers and filters you can play back.'),
+  },
+]);
+
+function toolWindowsFolder(ctx) {
+  const children = TOOL_WINDOWS.filter((entry) =>
+    ctx.dom.exists(entry.panel),
+  ).map((entry) =>
+    action(
+      `window:${entry.panel}`,
+      entry.label,
+      msg('OPEN'),
+      entry.desc,
+      msg(
+        'Opens as a floating window you can drag by its title, resize from the corner and close with ×.',
+      ),
+      {
+        run: () =>
+          ctx.openPanel(entry.panel, entry.layerId, entry.label) ||
+          ctx.fail(entry.label, msg('That panel is not available.')),
+      },
+    ),
+  );
+  return folder(
+    msg('Tool Windows'),
+    msg('every classic panel'),
+    msg(
+      'Every panel from the classic layout, each in its own floating window.',
+    ),
+    children,
+  );
+}
+
+/**
  * Build the menu tree for the current app. Called again whenever layers are
  * registered, so it stays a pure function of `ctx`.
  * @param {object} ctx Adapter built by createSkinShell.
@@ -499,7 +596,7 @@ export function buildMenuTree(ctx) {
     ),
     folder(
       msg('System'),
-      msg('skin, keys, language'),
+      msg('skin, language'),
       msg(
         'Settings that decide how the whole app runs. Check these first if something is not working.',
       ),
@@ -552,27 +649,6 @@ export function buildMenuTree(ctx) {
           {
             get: () => ctx.bootAnimation(),
             set: (on) => ctx.setBootAnimation(on),
-          },
-        ),
-        action(
-          'keys',
-          msg('Data Keys & Providers'),
-          msg('OPEN'),
-          msg(
-            'Where you add API keys for Google 3D tiles and the feeds that need one.',
-          ),
-          msg(
-            'Opens the key setup screen. Layers that need a missing key stay off until you add it.',
-          ),
-          {
-            run: () =>
-              dom.click('key-setup-chip') ||
-              ctx.fail(
-                msg('Data Keys & Providers'),
-                msg(
-                  'Key setup is only available when this app runs on its own development server.',
-                ),
-              ),
           },
         ),
         select(
@@ -670,24 +746,37 @@ export function buildMenuTree(ctx) {
       msg('Colour filters and visual effects on the globe.'),
       [
         select(
+          'picture-quality',
+          msg('Picture Quality'),
+          msg(
+            'How sharp the globe is drawn: screen resolution, 3D tile detail and edge smoothing.',
+          ),
+          msg(
+            "Sharp draws at your screen's full resolution with finer 3D buildings and is the default. Fast is lighter on older computers and laptops on battery.",
+          ),
+          {
+            options: () =>
+              Object.entries(PICTURE_PRESETS).map(([value, preset]) => ({
+                value,
+                label: preset.label,
+              })),
+            get: () => ctx.pictureQuality(),
+            set: (value) => ctx.setPictureQuality(value),
+          },
+        ),
+        select(
           'filter',
           msg('Globe Filter'),
           msg(
             'The colour treatment applied to the globe. Keys 1 to 8 pick one too.',
           ),
           msg(
-            'Only the globe changes. The menu and text keep the current skin.',
+            'Only the globe changes. The menu and text keep the current skin. The Phosphor skin starts with Normal; pick Phosphor here for a one-colour globe.',
           ),
           {
             options: () => GLOBE_FILTERS,
             get: () => state().style,
             set: (value) => ctx.setFilter(value),
-            warn: () =>
-              ctx.skin() === 'phosphor' && state().style !== 'phosphor'
-                ? t(
-                    'The Phosphor skin draws the globe in one colour. Another filter can make the colours clash.',
-                  )
-                : null,
           },
         ),
         select(
@@ -772,6 +861,22 @@ export function buildMenuTree(ctx) {
             get: () =>
               state().hud?.visible ? state().hud.layout || 'tactical' : 'off',
             set: (value) => ctx.setHud(value),
+          },
+        ),
+        toggle(
+          'crt-overlay',
+          msg('CRT Lines Over the Map'),
+          msg(
+            'Phosphor scanlines, rolling band and dark edges over the whole screen, map included.',
+          ),
+          msg(
+            'Off by default so the map stays clear. The menus keep their Phosphor look either way.',
+          ),
+          {
+            get: () => ctx.crtOverlay(),
+            set: (on) => ctx.setCrtOverlay(on),
+            available: () => ctx.skin() === 'phosphor',
+            unavailable: msg('Only used by the Phosphor skin.'),
           },
         ),
         toggle(
@@ -1064,6 +1169,19 @@ export function buildMenuTree(ctx) {
           { run: () => ctx.openLog() },
         ),
       ],
+    ),
+    toolWindowsFolder(ctx),
+    action(
+      'keys',
+      msg('API Keys'),
+      msg('OPEN'),
+      msg(
+        'Where you add API keys for Google 3D tiles and the feeds that need one. Also on the API KEYS button in the bottom bar.',
+      ),
+      msg(
+        'Opens the key setup window above the bottom bar. Layers that need a missing key stay off until you add it.',
+      ),
+      { pinned: true, run: () => ctx.openKeys() },
     ),
   ];
 }

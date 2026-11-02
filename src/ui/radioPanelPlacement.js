@@ -10,7 +10,12 @@ export function syncRadioPanelPlacement(doc) {
     context?.querySelector('.global-context-panel-inner');
   const header = context?.querySelector('.panel-header');
   if (!panel || !parent || !header || !dock || !mini) return;
-  if (panel.parentElement !== parent) parent.append(panel);
+  // A skin's floating window holds the panel until it is closed.
+  if (
+    panel.parentElement !== parent &&
+    !panel.classList?.contains('skin-window')
+  )
+    parent.append(panel);
   if (dock.parentElement !== header)
     header.insertBefore(dock, header.querySelector('.panel-collapse-btn'));
   if (mini.parentElement !== dock) dock.append(mini);

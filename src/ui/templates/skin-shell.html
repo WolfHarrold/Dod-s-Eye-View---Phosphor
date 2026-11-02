@@ -1,109 +1,379 @@
-  <!-- Skin shell: one top bar, one left menu tree, one footer. It replaces the
+<!-- Skin shell: one top bar, one left menu tree, one footer. It replaces the
        scattered panels in every skin; src/ui/skins/skinShell.js wires it to
        the existing controls, which stay mounted but hidden. -->
-  <div id="skin-shell" hidden>
-    <header id="skin-top" class="skin-top">
-      <div class="skin-top-left">
-        <button id="skin-menu-btn" class="skin-menu-btn" type="button" aria-expanded="false" aria-controls="skin-tree-panel" title="Show or hide the menu (M)" data-i18n-title>
-          <span class="skin-tree-box" aria-hidden="true"></span><span data-i18n>MENU</span>
-        </button>
-        <div class="skin-brand">
-          <svg class="skin-burst" viewBox="-13 -13 26 26" aria-hidden="true"><g data-skin-burst></g><circle r="2.4" /></svg>
-          <span class="skin-brand-name" translate="no">GOD'S EYE VIEW</span>
-        </div>
+<div id="skin-shell" hidden>
+  <header id="skin-top" class="skin-top">
+    <div class="skin-top-left">
+      <button
+        id="skin-menu-btn"
+        class="skin-menu-btn"
+        type="button"
+        aria-expanded="false"
+        aria-controls="skin-tree-panel"
+        title="Show or hide the menu (M)"
+        data-i18n-title
+      >
+        <span class="skin-tree-box" aria-hidden="true"></span
+        ><span data-i18n>MENU</span>
+      </button>
+      <div class="skin-brand">
+        <svg class="skin-burst" viewBox="-13 -13 26 26" aria-hidden="true">
+          <g data-skin-burst></g>
+          <circle r="2.4" />
+        </svg>
+        <span class="skin-brand-name" translate="no">GOD'S EYE VIEW</span>
       </div>
-
-      <div id="skin-radio" class="skin-radio">
-        <button class="skin-radio-btn" type="button" data-skin-radio-prev aria-label="Previous station" title="Previous station" data-i18n-aria-label data-i18n-title>◀◀</button>
-        <button class="skin-radio-btn play" type="button" data-skin-radio-play aria-pressed="false" aria-label="Play radio" title="Play or stop" data-i18n-aria-label data-i18n-title>▶</button>
-        <button class="skin-radio-btn" type="button" data-skin-radio-next aria-label="Next station" title="Next station" data-i18n-aria-label data-i18n-title>▶▶</button>
-        <button class="skin-radio-display" type="button" data-skin-radio-display aria-expanded="false" aria-controls="skin-radio-panel" title="Find a station by distance, country or genre" data-i18n-title>
-          <b data-skin-radio-name data-i18n>RADIO</b><small data-skin-radio-meta></small>
-        </button>
-        <button class="skin-radio-btn lucky" type="button" data-skin-radio-lucky title="Plays the nearest station you have not heard yet. Each press reaches a little further out." data-i18n-title>✦ <span data-i18n>LUCKY</span></button>
-        <div id="skin-radio-panel" class="skin-radio-panel" data-skin-radio-panel hidden>
-          <div class="skin-radio-tabs" role="tablist" aria-label="Find stations by" data-i18n-aria-label>
-            <button type="button" role="tab" aria-selected="true" data-skin-radio-tab="near" data-i18n>NEAR ME</button>
-            <button type="button" role="tab" aria-selected="false" data-skin-radio-tab="country" data-i18n>COUNTRY</button>
-            <button type="button" role="tab" aria-selected="false" data-skin-radio-tab="genre" data-i18n>GENRE</button>
-          </div>
-          <input class="skin-input skin-radio-search" type="search" data-skin-radio-search placeholder="Search stations, places, genres" aria-label="Search stations" autocomplete="off" data-i18n-placeholder data-i18n-aria-label />
-          <div class="skin-radio-list" data-skin-radio-list></div>
-        </div>
-      </div>
-
-      <div class="skin-top-right">
-        <label class="skin-colour" data-only-skin="phosphor">
-          <span class="skin-sr" data-i18n>Colour</span>
-          <select id="skin-colour" class="skin-select"></select>
-        </label>
-        <div id="skin-switch" class="skin-switch">
-          <div class="skin-switch-face face-deco">
-            <button type="button" class="skin-switch-deco" aria-haspopup="dialog" aria-controls="skin-picker">
-              <span class="skin-switch-kicker" data-i18n>CHANGE SKIN</span><b data-skin-current-name></b><span class="skin-switch-chevron" aria-hidden="true">▾</span>
-            </button>
-          </div>
-          <div class="skin-switch-face face-phosphor">
-            <button type="button" class="skin-switch-phosphor" aria-haspopup="dialog" aria-controls="skin-picker">[ <span class="skin-switch-label" data-i18n>SKIN:</span> <span data-skin-current-name></span> ▾ ]</button>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <section id="skin-picker" class="skin-picker" role="dialog" aria-labelledby="skin-picker-title" hidden>
-      <header><span id="skin-picker-title" data-i18n>CHANGE SKIN</span><small data-i18n>Pick a look. The screen powers down and restarts into it.</small></header>
-      <div class="skin-picker-grid" data-skin-picker-grid></div>
-    </section>
-
-    <nav id="skin-tree-panel" class="skin-tree-panel" aria-label="Settings menu" data-i18n-aria-label hidden>
-      <div class="skin-tree-head">
-        <input id="skin-find" class="skin-input" type="search" placeholder="Find a setting" aria-label="Find a setting" autocomplete="off" data-i18n-placeholder data-i18n-aria-label />
-        <button id="skin-open-all" class="skin-small-btn" type="button" title="Open every folder" data-i18n data-i18n-title>OPEN ALL</button>
-        <button id="skin-close-all" class="skin-small-btn" type="button" title="Close every folder" data-i18n data-i18n-title>CLOSE ALL</button>
-      </div>
-      <div id="skin-tree" class="skin-tree" role="tree" aria-label="Settings" data-i18n-aria-label></div>
-      <div id="skin-info" class="skin-info" aria-live="polite"></div>
-    </nav>
-
-    <section id="skin-welcome" class="skin-welcome" role="dialog" aria-labelledby="skin-welcome-title" hidden>
-      <h2 id="skin-welcome-title" data-i18n>Welcome to God's Eye View</h2>
-      <p data-i18n>Not sure where to start? Quick Start sets up a clean first view:</p>
-      <ul>
-        <li data-i18n>Aircraft, ships, satellites and earthquakes on</li>
-        <li data-i18n>3D models only up close, light glow, minimal readouts</li>
-        <li data-i18n>Everything else off, so nothing clutters the globe</li>
-      </ul>
-      <div class="skin-welcome-buttons">
-        <button type="button" class="skin-quick" data-skin-quick-start data-i18n>QUICK START</button>
-        <button type="button" class="skin-quick alt" data-skin-welcome-dismiss data-i18n>I'll explore myself</button>
-      </div>
-    </section>
-
-    <div id="skin-notices" class="skin-notices" aria-live="polite"></div>
-
-    <section id="skin-log" class="skin-log" aria-labelledby="skin-log-title" hidden>
-      <header><span id="skin-log-title" data-i18n>ACTION LOG</span><button id="skin-log-clear" class="skin-small-btn" type="button" data-i18n>CLEAR</button><button id="skin-log-close" class="skin-small-btn" type="button" data-i18n>CLOSE</button></header>
-      <ol id="skin-log-list"></ol>
-    </section>
-
-    <footer id="skin-foot" class="skin-foot">
-      <div class="skin-cell" data-skin-cell-skin></div>
-      <div class="skin-cell" data-skin-cell-layers></div>
-      <div class="skin-cell" data-skin-cell-clock></div>
-      <button id="skin-log-btn" class="skin-cell skin-log-btn" type="button" aria-expanded="false" aria-controls="skin-log"></button>
-    </footer>
-  </div>
-
-  <div id="skin-fx" aria-hidden="true"><div class="skin-fx-vignette"></div></div>
-
-  <div id="skin-boot" aria-live="off" hidden>
-    <div class="skin-boot-afterglow" data-skin-boot-afterglow></div>
-    <pre class="skin-boot-console" data-skin-boot-console></pre>
-    <div class="skin-boot-deco" data-skin-boot-deco>
-      <svg class="skin-burst" viewBox="-13 -13 26 26" aria-hidden="true"><g data-skin-burst></g><circle r="2.4" /></svg>
-      <h2 translate="no">God's Eye View</h2>
-      <div class="skin-boot-progress"><i data-skin-boot-progress></i></div>
-      <p data-skin-boot-step></p>
     </div>
-    <div class="skin-boot-skip" data-i18n>ANY KEY TO SKIP</div>
+
+    <div id="skin-radio" class="skin-radio">
+      <button
+        class="skin-radio-btn"
+        type="button"
+        data-skin-radio-prev
+        aria-label="Previous station"
+        title="Previous station"
+        data-i18n-aria-label
+        data-i18n-title
+      >
+        ◀◀
+      </button>
+      <button
+        class="skin-radio-btn play"
+        type="button"
+        data-skin-radio-play
+        aria-pressed="false"
+        aria-label="Play radio"
+        title="Play or stop"
+        data-i18n-aria-label
+        data-i18n-title
+      >
+        ▶
+      </button>
+      <button
+        class="skin-radio-btn"
+        type="button"
+        data-skin-radio-next
+        aria-label="Next station"
+        title="Next station"
+        data-i18n-aria-label
+        data-i18n-title
+      >
+        ▶▶
+      </button>
+      <button
+        class="skin-radio-display"
+        type="button"
+        data-skin-radio-display
+        aria-expanded="false"
+        aria-controls="skin-radio-panel"
+        title="Find a station by distance, country or genre"
+        data-i18n-title
+      >
+        <b data-skin-radio-name data-i18n>RADIO</b
+        ><small data-skin-radio-meta></small>
+      </button>
+      <button
+        class="skin-radio-btn lucky"
+        type="button"
+        data-skin-radio-lucky
+        title="Plays the nearest station you have not heard yet. Each press reaches a little further out."
+        data-i18n-title
+      >
+        ✦ <span data-i18n>LUCKY</span>
+      </button>
+      <div
+        id="skin-radio-panel"
+        class="skin-radio-panel"
+        data-skin-radio-panel
+        hidden
+      >
+        <div
+          class="skin-radio-tabs"
+          role="tablist"
+          aria-label="Find stations by"
+          data-i18n-aria-label
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected="true"
+            data-skin-radio-tab="near"
+            data-i18n
+          >
+            NEAR ME
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected="false"
+            data-skin-radio-tab="country"
+            data-i18n
+          >
+            COUNTRY
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected="false"
+            data-skin-radio-tab="genre"
+            data-i18n
+          >
+            GENRE
+          </button>
+        </div>
+        <input
+          class="skin-input skin-radio-search"
+          type="search"
+          data-skin-radio-search
+          placeholder="Search stations, places, genres"
+          aria-label="Search stations"
+          autocomplete="off"
+          data-i18n-placeholder
+          data-i18n-aria-label
+        />
+        <div class="skin-radio-list" data-skin-radio-list></div>
+      </div>
+    </div>
+
+    <div class="skin-top-right">
+      <label class="skin-colour" data-only-skin="phosphor">
+        <span class="skin-sr" data-i18n>Colour</span>
+        <select id="skin-colour" class="skin-select"></select>
+      </label>
+      <div id="skin-switch" class="skin-switch">
+        <div class="skin-switch-face face-deco">
+          <button
+            type="button"
+            class="skin-switch-deco"
+            aria-haspopup="dialog"
+            aria-controls="skin-picker"
+          >
+            <span class="skin-switch-kicker" data-i18n>CHANGE SKIN</span
+            ><b data-skin-current-name></b
+            ><span class="skin-switch-chevron" aria-hidden="true">▾</span>
+          </button>
+        </div>
+        <div class="skin-switch-face face-phosphor">
+          <button
+            type="button"
+            class="skin-switch-phosphor"
+            aria-haspopup="dialog"
+            aria-controls="skin-picker"
+          >
+            [ <span class="skin-switch-label" data-i18n>SKIN:</span>
+            <span data-skin-current-name></span> ▾ ]
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section
+    id="skin-picker"
+    class="skin-picker"
+    role="dialog"
+    aria-labelledby="skin-picker-title"
+    hidden
+  >
+    <header>
+      <span id="skin-picker-title" data-i18n>CHANGE SKIN</span
+      ><small data-i18n
+        >Pick a look. The screen powers down and restarts into it.</small
+      >
+    </header>
+    <div class="skin-picker-grid" data-skin-picker-grid></div>
+  </section>
+
+  <nav
+    id="skin-tree-panel"
+    class="skin-tree-panel"
+    aria-label="Settings menu"
+    data-i18n-aria-label
+    hidden
+  >
+    <div class="skin-tree-head">
+      <input
+        id="skin-find"
+        class="skin-input"
+        type="search"
+        placeholder="Find a setting"
+        aria-label="Find a setting"
+        autocomplete="off"
+        data-i18n-placeholder
+        data-i18n-aria-label
+      />
+      <button
+        id="skin-open-all"
+        class="skin-small-btn"
+        type="button"
+        title="Open every folder"
+        data-i18n
+        data-i18n-title
+      >
+        OPEN ALL
+      </button>
+      <button
+        id="skin-close-all"
+        class="skin-small-btn"
+        type="button"
+        title="Close every folder"
+        data-i18n
+        data-i18n-title
+      >
+        CLOSE ALL
+      </button>
+    </div>
+    <div
+      id="skin-tree"
+      class="skin-tree"
+      role="tree"
+      aria-label="Settings"
+      data-i18n-aria-label
+    ></div>
+    <div id="skin-info" class="skin-info" aria-live="polite"></div>
+  </nav>
+
+  <section
+    id="skin-welcome"
+    class="skin-welcome"
+    role="dialog"
+    aria-labelledby="skin-welcome-title"
+    hidden
+  >
+    <h2 id="skin-welcome-title" data-i18n>Welcome to God's Eye View</h2>
+    <p data-i18n>
+      Not sure where to start? Quick Start sets up a clean first view:
+    </p>
+    <ul>
+      <li data-i18n>Aircraft, ships, satellites and earthquakes on</li>
+      <li data-i18n>3D models only up close, light glow, minimal readouts</li>
+      <li data-i18n>Everything else off, so nothing clutters the globe</li>
+    </ul>
+    <div class="skin-welcome-buttons">
+      <button type="button" class="skin-quick" data-skin-quick-start data-i18n>
+        QUICK START
+      </button>
+      <button
+        type="button"
+        class="skin-quick alt"
+        data-skin-welcome-dismiss
+        data-i18n
+      >
+        I'll explore myself
+      </button>
+    </div>
+  </section>
+
+  <div id="skin-windows" class="skin-windows"></div>
+
+  <section
+    id="skin-fav"
+    class="skin-fav"
+    aria-labelledby="skin-fav-title"
+    hidden
+  >
+    <div
+      class="skin-fav-bar"
+      data-skin-fav-bar
+      title="Drag to move. Double-click to collapse or open."
+      data-i18n-title
+    >
+      <span class="skin-fav-star" aria-hidden="true">★</span>
+      <span id="skin-fav-title" class="skin-fav-title" data-i18n
+        >FAVOURITES</span
+      >
+      <small class="skin-fav-count" data-skin-fav-count></small>
+      <button
+        type="button"
+        class="skin-fav-collapse"
+        data-skin-fav-collapse
+        aria-controls="skin-fav-body"
+        aria-expanded="true"
+      >
+        –
+      </button>
+    </div>
+    <div id="skin-fav-body" class="skin-fav-body" data-skin-fav-body>
+      <div
+        class="skin-tree skin-fav-tree"
+        role="tree"
+        aria-label="Favourites"
+        data-skin-fav-tree
+        data-i18n-aria-label
+      ></div>
+      <p class="skin-fav-empty" data-skin-fav-empty data-i18n>
+        Star ☆ any setting in the menu to keep it here.
+      </p>
+    </div>
+  </section>
+
+  <div id="skin-notices" class="skin-notices" aria-live="polite"></div>
+
+  <section
+    id="skin-log"
+    class="skin-log"
+    aria-labelledby="skin-log-title"
+    hidden
+  >
+    <header>
+      <span id="skin-log-title" data-i18n>ACTION LOG</span
+      ><button
+        id="skin-log-clear"
+        class="skin-small-btn"
+        type="button"
+        data-i18n
+      >
+        CLEAR</button
+      ><button
+        id="skin-log-close"
+        class="skin-small-btn"
+        type="button"
+        data-i18n
+      >
+        CLOSE
+      </button>
+    </header>
+    <ol id="skin-log-list"></ol>
+  </section>
+
+  <footer id="skin-foot" class="skin-foot">
+    <div class="skin-cell" data-skin-cell-skin></div>
+    <div class="skin-cell" data-skin-cell-layers></div>
+    <div class="skin-cell" data-skin-cell-clock></div>
+    <button
+      id="skin-keys-btn"
+      class="skin-cell skin-keys-btn"
+      type="button"
+      aria-haspopup="dialog"
+      aria-controls="key-setup"
+      title="API keys and data providers"
+      data-i18n-title
+    >
+      <span data-i18n>API KEYS</span>
+    </button>
+    <button
+      id="skin-log-btn"
+      class="skin-cell skin-log-btn"
+      type="button"
+      aria-expanded="false"
+      aria-controls="skin-log"
+    ></button>
+  </footer>
+</div>
+
+<div id="skin-fx" aria-hidden="true"><div class="skin-fx-vignette"></div></div>
+
+<div id="skin-boot" aria-live="off" hidden>
+  <div class="skin-boot-afterglow" data-skin-boot-afterglow></div>
+  <pre class="skin-boot-console" data-skin-boot-console></pre>
+  <div class="skin-boot-deco" data-skin-boot-deco>
+    <svg class="skin-burst" viewBox="-13 -13 26 26" aria-hidden="true">
+      <g data-skin-burst></g>
+      <circle r="2.4" />
+    </svg>
+    <h2 translate="no">God's Eye View</h2>
+    <div class="skin-boot-progress"><i data-skin-boot-progress></i></div>
+    <p data-skin-boot-step></p>
   </div>
+  <div class="skin-boot-skip" data-i18n>ANY KEY TO SKIP</div>
+</div>
